@@ -1,0 +1,4 @@
+camelot_image_asset:
+    resource: .
+    type: image_asset
+    prefix: /

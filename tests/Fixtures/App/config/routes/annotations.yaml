@@ -1,0 +1,3 @@
+#controllers:
+#    resource: ../../TestController.php
+#    type: annotation
