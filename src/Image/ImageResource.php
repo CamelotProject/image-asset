@@ -2,51 +2,50 @@
 
 declare(strict_types=1);
 
-namespace Camelot\ImageAssets\Image;
+namespace Camelot\ImageAsset\Image;
 
-use Camelot\Filesystem\Handler\Image;
-use Camelot\Filesystem\Handler\Image\Dimensions;
+use Camelot\ImageAsset\Exception\InvalidArgumentException;
+use Camelot\ImageAsset\Exception\UnsupportedFileTypeException;
+use Camelot\ImageAsset\Image\Attributes\Color;
+use Camelot\ImageAsset\Image\Attributes\Info;
+use Camelot\ImageAsset\Image\Attributes\Point;
+use Camelot\ImageAsset\Image\Type\TypeInterface;
+use Camelot\Thrower\Thrower;
+use ErrorException;
 use Exception;
-use InvalidArgumentException;
 use PHPExif\Exif;
 use RuntimeException;
+use function function_exists;
 use function is_resource;
+use const IMAGETYPE_WEBP;
 
 /**
  * An object representation of GD's native image resources.
- *
- * Note: Only the functionality needed has been implemented in this class.
- *
- * @author Carson Full <carsonfull@gmail.com>
  */
-class ImageResource
+final class ImageResource
 {
-    /** @var resource */
-    protected $resource;
-    /** @var Image\Type */
-    protected $type;
-    /** @var Image\Info */
-    protected $info;
-
-    /** @var int Quality setting for JPEGs and PNGs */
-    protected static $quality = 80;
-    /** @var bool */
-    protected static $normalizeJpegOrientation = true;
-
     /**
-     * Constructor.
+     * Quality setting for JPEGs and PNGs
      *
-     * Either type or info need to be provided.
-     *
-     * @param resource   $resource A GD resource
-     * @param Image\Type $type     Image type
-     * @param Image\Info $info     Image info
+     * @var int
      */
-    public function __construct($resource, Image\Type $type = null, Image\Info $info = null)
+    private static $quality = 80;
+    /** @var bool */
+    private static $normalizeJpegOrientation = true;
+
+    /** @var resource */
+    private $resource;
+    /** @var ?TypeInterface */
+    private $type;
+    /** @var ?Info */
+    private $info;
+
+    public function __construct($resource, TypeInterface $type = null, Info $info = null)
     {
-        if (!is_resource($resource) || !get_resource_type($resource) === 'gd') {
+        if (!is_resource($resource) || get_resource_type($resource) !== 'gd') {
             throw new InvalidArgumentException('Given resource must be a GD resource');
         }
+
         $this->resource = $resource;
         $this->type = $type;
         $this->info = $info;
@@ -55,7 +54,7 @@ class ImageResource
             $this->type = $info->getType();
         }
         if ($this->type === null) {
-            throw new InvalidArgumentException('Type or ImageInfo need to be provided');
+            throw new InvalidArgumentException('Type or ImageInfo needs to be provided');
         }
 
         if ($this->type->getId() === IMAGETYPE_JPEG && static::$normalizeJpegOrientation) {
@@ -63,7 +62,8 @@ class ImageResource
         }
     }
 
-    public function __toString()
+    /** @codeCoverageIgnore */
+    public function __toString(): string
     {
         try {
             return $this->toString();
@@ -85,6 +85,7 @@ class ImageResource
         $this->resetInfo();
     }
 
+    /** @codeCoverageIgnore */
     public function __destroy(): void
     {
         imagedestroy($this->resource);
@@ -92,29 +93,26 @@ class ImageResource
 
     /**
      * Creates an ImageResource from a file.
-     *
-     * @param string $file A filepath
-     *
-     * @return ImageResource
      */
-    public static function createFromFile($file)
+    public static function createFromFile(string $filePath): self
     {
-        $info = Image\Info::createFromFile($file);
-        switch ($info->getType()->getId()) {
-            case IMAGETYPE_BMP:
-                $resource = imagecreatefromwbmp($file);
-                break;
-            case IMAGETYPE_GIF:
-                $resource = imagecreatefromgif($file);
-                break;
-            case IMAGETYPE_JPEG:
-                $resource = imagecreatefromjpeg($file);
-                break;
-            case IMAGETYPE_PNG:
-                $resource = imagecreatefrompng($file);
-                break;
-            default:
-                throw new InvalidArgumentException('Unknown image file');
+        $info = Info::createFromFile($filePath);
+        $imageType = $info->getType()->getId();
+        $map = [
+            IMAGETYPE_BMP => 'imagecreatefromwbmp',
+            IMAGETYPE_GIF => 'imagecreatefromgif',
+            IMAGETYPE_JPEG => 'imagecreatefromjpeg',
+            IMAGETYPE_PNG => 'imagecreatefrompng',
+            IMAGETYPE_WEBP => 'imagecreatefromwebp',
+        ];
+        if (!isset($map[$imageType]) || !function_exists($map[$imageType])) {
+            throw new UnsupportedFileTypeException(image_type_to_mime_type($imageType), $filePath);
+        }
+
+        try {
+            $resource = Thrower::call($map[$imageType], $filePath);
+        } catch (ErrorException $e) {
+            throw new UnsupportedFileTypeException(image_type_to_mime_type($imageType), $filePath, 0, $e);
         }
 
         return new static($resource, null, $info);
@@ -125,14 +123,16 @@ class ImageResource
      *
      * @param string $data A string containing the image data
      *
-     * @return ImageResource
+     * @codeCoverageIgnore
      */
-    public static function createFromString($data)
+    public static function createFromString(string $data): self
     {
-        $info = Image\Info::createFromString($data);
-        $resource = @imagecreatefromstring($data);
-        if ($resource === false) {
-            throw new InvalidArgumentException('Invalid image data');
+        $info = Info::createFromString($data);
+
+        try {
+            $resource = Thrower::call('imagecreatefromstring', $data);
+        } catch (ErrorException $e) {
+            throw new InvalidArgumentException('Invalid image data', 0, $e);
         }
 
         return new static($resource, null, $info);
@@ -141,15 +141,13 @@ class ImageResource
     /**
      * Creates a new image given the width and height.
      *
-     * @param Dimensions $dimensions Image dimensions
-     * @param Image\Type $type       Type of image
-     *
-     * @return ImageResource
+     * @codeCoverageIgnore
      */
-    public static function createNew(Dimensions $dimensions, Image\Type $type)
+    public static function createNew(Dimensions $dimensions, ?TypeInterface $type): self
     {
-        $resource = imagecreatetruecolor($dimensions->getWidth(), $dimensions->getHeight());
-        if ($resource === false) {
+        try {
+            $resource = Thrower::call('imagecreatetruecolor', $dimensions->getWidth(), $dimensions->getHeight());
+        } catch (ErrorException $e) {
             throw new InvalidArgumentException('Failed to create new image');
         }
 
@@ -172,42 +170,33 @@ class ImageResource
 
     /**
      * Returns the image dimensions.
-     *
-     * @return Dimensions
      */
-    public function getDimensions()
+    public function getDimensions(): Dimensions
     {
         return new Dimensions(imagesx($this->resource), imagesy($this->resource));
     }
 
     /**
      * Returns the image type.
-     *
-     * @return Image\Type
      */
-    public function getType()
+    public function getType(): ?TypeInterface
     {
         return $this->type;
     }
 
     /**
      * Returns the image's info.
-     *
-     * @return Image\Info
      */
-    public function getInfo()
+    public function getInfo(): Info
     {
         if (!$this->info) {
-            $this->info = Image\Info::createFromString($this);
+            $this->info = Info::createFromString($this->toString());
         }
 
         return $this->info;
     }
 
-    /**
-     * @return Exif
-     */
-    public function getExif()
+    public function getExif(): Exif
     {
         return $this->getInfo()->getExif();
     }
@@ -219,10 +208,8 @@ class ImageResource
      * @param int      $green Value of green component (between 0 and 255)
      * @param int      $blue  Value of blue component (between 0 and 255)
      * @param int|null $alpha Optional value of alpha component (between 0 and 127). 0 = opaque, 127 = transparent.
-     *
-     * @return Color
      */
-    public function allocateColor($red, $green, $blue, $alpha = null)
+    public function allocateColor(int $red, int $green, int $blue, ?int $alpha = null): Color
     {
         // Verify parameters before trying to allocate
         new Color($red, $green, $blue, $alpha);
@@ -238,6 +225,7 @@ class ImageResource
         }
 
         // Allocate new color
+        // @codeCoverageIgnoreStart
         if ($alpha === null) {
             $index = imagecolorallocate($this->resource, $red, $green, $blue);
         } else {
@@ -248,33 +236,25 @@ class ImageResource
         }
 
         return new Color($red, $green, $blue, $alpha, $index);
+        // @codeCoverageIgnoreEnd
     }
 
-    /**
-     * Allocate a transparent color for an image.
-     *
-     * @return Color
-     */
-    public function allocateTransparentColor()
+    /** Allocate a transparent color for an image. */
+    public function allocateTransparentColor(): Color
     {
         // Reuse same transparent color index if it exists
         $index = imagecolortransparent($this->resource);
         if ($index === -1) {
             // ok allocate it
             $color = $this->allocateColor(0, 0, 0, 127);
-            $index = imagecolortransparent($this->resource, $color->getIndex());
+            $index = imagecolortransparent($this->resource, (int) $color->getIndex());
         }
 
         return new Color(0, 0, 0, 127, $index);
     }
 
-    /**
-     * Returns the color at a point.
-     *
-     *
-     * @return Color
-     */
-    public function getColorAt(Point $point)
+    /** Returns the color at a point. */
+    public function getColorAt(Point $point): Color
     {
         $dim = $this->getDimensions();
         if ($point->getX() > $dim->getWidth() || $point->getY() > $dim->getHeight()) {
@@ -294,14 +274,12 @@ class ImageResource
      *
      * @param Color $color      The fill color
      * @param Point $startPoint The point to start at
-     *
-     * @return ImageResource This image
      */
-    public function fill(Color $color, Point $startPoint = null)
+    public function fill(Color $color, Point $startPoint = null): self
     {
         $startPoint = $startPoint ?: new Point();
         $color = $this->verifyColor($color);
-        imagefill($this->resource, $startPoint->getX(), $startPoint->getY(), $color->getIndex());
+        imagefill($this->resource, $startPoint->getX(), $startPoint->getY(), (int) $color->getIndex());
 
         return $this;
     }
@@ -314,8 +292,6 @@ class ImageResource
      * @param Dimensions    $destDimensions The destination dimensions
      * @param Dimensions    $srcDimensions  The source dimensions
      * @param ImageResource $dest           Optional destination image. Default is current image.
-     *
-     * @return ImageResource This image
      */
     public function resample(
         Point $destPoint,
@@ -323,7 +299,7 @@ class ImageResource
         Dimensions $destDimensions,
         Dimensions $srcDimensions,
         self $dest = null
-    ) {
+    ): self {
         $dest = $dest ?: clone $this;
 
         imagecopyresampled(
@@ -345,16 +321,12 @@ class ImageResource
     }
 
     /**
-     * Flips the image.
+     * Flips the image ('V' = vertical, 'H' = horizontal, 'HV' = both).
      *
      * Based on http://stackoverflow.com/a/10001884/1136593
      * Thanks Jon Grant
-     *
-     * @param string $mode ('V' = vertical, 'H' = horizontal, 'HV' = both)
-     *
-     * @return ImageResource This image
      */
-    public function flip($mode)
+    public function flip(string $mode): self
     {
         $dim = $this->getDimensions();
 
@@ -382,10 +354,8 @@ class ImageResource
      * Rotates the image.
      *
      * @param string $angle ('L' = -90°, 'R' = +90°, 'T' = 180°)
-     *
-     * @return ImageResource This image
      */
-    public function rotate($angle)
+    public function rotate($angle): self
     {
         $rotate = [
             'L' => 270,
@@ -403,39 +373,39 @@ class ImageResource
         return $this;
     }
 
-    /**
-     * Writes the image to a file.
-     *
-     * @param string $file
-     */
-    public function toFile($file): void
+    /** Writes the image to a file. */
+    public function toFile(?string $filePath): void
     {
-        switch ($this->type->getId()) {
+        $imageType = $this->type->getId();
+        switch ($imageType) {
             case IMAGETYPE_BMP:
-                imagewbmp($this->resource, $file);
+                imagewbmp($this->resource, $filePath);
                 break;
             case IMAGETYPE_GIF:
-                imagegif($this->resource, $file);
+                imagegif($this->resource, $filePath);
                 break;
             case IMAGETYPE_JPEG:
                 imageinterlace($this->resource, 1);
-                imagejpeg($this->resource, $file, static::$quality);
+                imagejpeg($this->resource, $filePath, static::$quality);
                 break;
             case IMAGETYPE_PNG:
                 $compression = static::convertJpegQualityToPngCompression(static::$quality);
-                imagepng($this->resource, $file, $compression);
+                imagepng($this->resource, $filePath, $compression);
+                break;
+            case IMAGETYPE_WEBP:
+                imagewebp($this->resource, $filePath);
                 break;
             default:
-                throw new RuntimeException('Unknown image type');
+                throw new UnsupportedFileTypeException(image_type_to_mime_type($imageType), $filePath); // @codeCoverageIgnore
         }
     }
 
     /**
      * Returns the image as a data string.
      *
-     * @return string
+     * @codeCoverageIgnore
      */
-    public function toString()
+    public function toString(): string
     {
         ob_start();
 
@@ -452,24 +422,16 @@ class ImageResource
         return $data;
     }
 
-    /**
-     * Returns whether JPEG orientation is normalized or not.
-     *
-     * @return bool
-     */
-    public static function isJpegOrientationNormalized()
+    /** Returns whether JPEG orientation is normalized or not. */
+    public static function isJpegOrientationNormalized(): bool
     {
         return static::$normalizeJpegOrientation;
     }
 
-    /**
-     * Enable or disable JPEG orientation normalization.
-     *
-     * @param bool $normalizeJpegOrientation
-     */
-    public static function setNormalizeJpegOrientation($normalizeJpegOrientation): void
+    /** Enable or disable JPEG orientation normalization. */
+    public static function setNormalizeJpegOrientation(bool $normalizeJpegOrientation): void
     {
-        static::$normalizeJpegOrientation = (bool) $normalizeJpegOrientation;
+        static::$normalizeJpegOrientation = $normalizeJpegOrientation;
     }
 
     /**
@@ -479,12 +441,9 @@ class ImageResource
      *
      * @param int $quality Between 0 and 100
      */
-    public static function setQuality($quality): void
+    public static function setQuality(int $quality): void
     {
-        if (!is_numeric($quality)) {
-            throw new InvalidArgumentException('Quality is expected to be numeric');
-        }
-        if ($quality < 0 && $quality > 100) {
+        if ($quality < 0 || $quality > 100) {
             throw new InvalidArgumentException('Quality is expected to be between 0 and 100');
         }
         if ($quality < 10) {
@@ -494,12 +453,8 @@ class ImageResource
         static::$quality = $quality;
     }
 
-    /**
-     * Returns the quality setting.
-     *
-     * @return int
-     */
-    public static function getQuality()
+    /** Returns the quality setting. */
+    public static function getQuality(): int
     {
         return static::$quality;
     }
@@ -507,36 +462,26 @@ class ImageResource
     /**
      * Convert JPEG quality scale to PNG compression scale.
      * JPEG: 0 (worst) - 100 (best). PNG: 0 (best) - 10 (worst).
-     *
-     * @param int $quality
-     *
-     * @return int
      */
-    protected static function convertJpegQualityToPngCompression($quality)
+    private static function convertJpegQualityToPngCompression(int $quality): int
     {
         $quality = (100 - $quality) / 10;
         $quality = min(ceil($quality), 9);
 
-        return $quality;
+        return (int) $quality;
     }
 
-    /**
-     * Convert PNG compression scale to JPEG quality scale.
-     *
-     * @param int $compression
-     *
-     * @return int
-     */
-    protected static function convertPngCompressionToJpegQuality($compression)
+    /** Convert PNG compression scale to JPEG quality scale. */
+    private static function convertPngCompressionToJpegQuality(int $compression): int
     {
-        return 100 - 10 * $compression;
+        return 100 - (10 * $compression);
     }
 
     /**
      * If orientation in EXIF data is not normal,
      * flip and/or rotate image until it is correct.
      */
-    protected function normalizeJpegOrientation(): void
+    private function normalizeJpegOrientation(): void
     {
         $orientation = $this->getExif()->getOrientation();
         $modes = [2 => 'H-', 3 => '-T', 4 => 'V-', 5 => 'VL', 6 => '-L', 7 => 'HL', 8 => '-R'];
@@ -548,13 +493,8 @@ class ImageResource
         $this->flip($mode[0])->rotate($mode[1]);
     }
 
-    /**
-     * Verifies that a color is allocated.
-     *
-     *
-     * @return Color
-     */
-    protected function verifyColor(Color $color)
+    /** Verifies that a color is allocated. */
+    private function verifyColor(Color $color): Color
     {
         if ($color->getIndex() !== null) {
             return $color;
@@ -563,10 +503,8 @@ class ImageResource
         return $this->allocateColor($color->getRed(), $color->getGreen(), $color->getBlue(), $color->getAlpha());
     }
 
-    /**
-     * If image changes, info needs to be recreated.
-     */
-    protected function resetInfo(): void
+    /** If image changes, info needs to be recreated. */
+    private function resetInfo(): void
     {
         $this->info = null;
     }

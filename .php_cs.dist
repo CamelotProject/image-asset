@@ -6,17 +6,17 @@ return Camelot\CsFixer\Config::create()
     ->addRules(
         Camelot\CsFixer\Rules::create()
             ->risky()
-            ->php71()
+            ->php73()
+            ->phpUnit75()
     )
     ->addRules([
-        '@PHPUnit60Migration:risky' => true,
-        'declare_strict_types' => true,
-        'native_function_invocation' => [
-            'include' => ['@compiler_optimized'],
+        '@PhpCsFixer:risky' => true,
+        'phpdoc_inline_tag' => true,
+        'phpdoc_line_span' => [
+            'const' => 'single',
+            'method' => 'single',
+            'property' => 'single',
         ],
-        'no_superfluous_phpdoc_tags' => true,
-        'ordered_class_elements' => true,
-        'php_unit_strict' => false,
     ])
     ->in('src')
     ->in('tests')

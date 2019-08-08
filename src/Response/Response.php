@@ -2,32 +2,31 @@
 
 declare(strict_types=1);
 
-namespace Camelot\ImageAssets\Response;
+namespace Camelot\ImageAsset\Response;
 
-use Camelot\ImageAssets\Image\Thumbnail;
+use Camelot\ImageAsset\Thumbnail\ThumbnailInterface;
+use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
 
 /**
  * A Thumbnail Response.
- *
- * @author Carson Full <carsonfull@gmail.com>
  */
-class Response extends \Symfony\Component\HttpFoundation\Response
+final class Response extends HttpFoundationResponse
 {
-    /** @var Thumbnail */
-    protected $thumbnail;
+    /** @var ThumbnailInterface */
+    private $thumbnail;
 
     /**
      * Constructor.
      *
-     * @param Thumbnail $thumbnail        The thumbnail
-     * @param int       $status           The response status code
-     * @param array     $headers          An array of response headers
-     * @param bool      $public           Thumbnails are public by default
-     * @param bool      $autoEtag         Whether the ETag header should be automatically set
-     * @param bool      $autoLastModified Whether the Last-Modified header should be automatically set
+     * @param ThumbnailInterface $thumbnail        The thumbnail
+     * @param int                $status           The response status code
+     * @param array              $headers          An array of response headers
+     * @param bool               $public           Thumbnails are public by default
+     * @param bool               $autoEtag         Whether the ETag header should be automatically set
+     * @param bool               $autoLastModified Whether the Last-Modified header should be automatically set
      */
     public function __construct(
-        Thumbnail $thumbnail,
+        ThumbnailInterface $thumbnail,
         $status = 200,
         $headers = [],
         $public = true,
@@ -46,12 +45,12 @@ class Response extends \Symfony\Component\HttpFoundation\Response
     /**
      * Factory method for chainability.
      *
-     * @param Thumbnail $thumbnail        The thumbnail
-     * @param int       $status           The response status code
-     * @param array     $headers          An array of response headers
-     * @param bool      $public           Thumbnails are public by default
-     * @param bool      $autoEtag         Whether the ETag header should be automatically set
-     * @param bool      $autoLastModified Whether the Last-Modified header should be automatically set
+     * @param ThumbnailInterface $thumbnail        The thumbnail
+     * @param int                $status           The response status code
+     * @param array              $headers          An array of response headers
+     * @param bool               $public           Thumbnails are public by default
+     * @param bool               $autoEtag         Whether the ETag header should be automatically set
+     * @param bool               $autoLastModified Whether the Last-Modified header should be automatically set
      *
      * @return Response
      */
@@ -66,19 +65,12 @@ class Response extends \Symfony\Component\HttpFoundation\Response
         return new static($thumbnail, $status, $headers, $public, $autoEtag, $autoLastModified);
     }
 
-    /**
-     * @return Thumbnail
-     */
-    public function getThumbnail()
+    public function getThumbnail(): ThumbnailInterface
     {
         return $this->thumbnail;
     }
 
-    /**
-     * @param bool $autoEtag
-     * @param bool $autoLastModified
-     */
-    public function setThumbnail(Thumbnail $thumbnail, $autoEtag = false, $autoLastModified = true): void
+    public function setThumbnail(ThumbnailInterface $thumbnail, bool $autoEtag = false, bool $autoLastModified = true): void
     {
         $this->thumbnail = $thumbnail;
         $this->setContent($thumbnail);
@@ -91,25 +83,24 @@ class Response extends \Symfony\Component\HttpFoundation\Response
             $this->setAutoLastModified();
         }
 
-        $this->headers->set('Content-Type', $thumbnail->getImage()->getMimeType());
+        $mimeType = $thumbnail->getImage()->getMimeType();
+        if ($mimeType) {
+            $this->headers->set('Content-Type', $mimeType);
+        }
     }
 
-    /**
-     * Automatically sets the Last-Modified header according the file modification date.
-     */
-    public function setAutoLastModified()
+    /** Automatically sets the Last-Modified header according the file modification date. */
+    public function setAutoLastModified(): self
     {
-        $this->setLastModified($this->thumbnail->getImage()->getCarbon());
+        $this->setLastModified($this->thumbnail->getImage()->getMDateTime());
 
         return $this;
     }
 
-    /**
-     * Automatically sets the ETag header according to the checksum of the file.
-     */
-    public function setAutoEtag()
+    /** Automatically sets the ETag header according to the checksum of the file. */
+    public function setAutoEtag(): self
     {
-        $this->setEtag(sha1($this->thumbnail));
+        $this->setEtag(sha1((string) $this->thumbnail));
 
         return $this;
     }

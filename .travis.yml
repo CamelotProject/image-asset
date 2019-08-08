@@ -4,8 +4,7 @@ addons:
     chrome: stable
 
 php:
-    - 7.3
-    - 7.4
+    - 7.4snapshot
     - nightly
 
 matrix:
@@ -15,10 +14,12 @@ matrix:
 
 before_script:
     - travis_retry composer self-update
-    - travis_retry composer install --no-interaction --prefer-dist
+    - echo $TRAVIS_PHP_VERSION
+    - if [[ $TRAVIS_PHP_VERSION =~ ^7 ]] ; then travis_retry composer install --no-interaction --prefer-dist ; fi
+    - if [[ $TRAVIS_PHP_VERSION == nightly ]] ; then travis_retry composer install --no-interaction --prefer-dist --configuration tests/php8-composer.json ; fi
 
 script:
-    - phpunit
+    - vendor/bin/simple-phpunit
 
 cache:
     directories:
