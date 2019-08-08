@@ -1,0 +1,9 @@
+parameters:
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    Camelot\ImageAsset\Tests\Fixtures\App\TestController:
+        tags: ['controller.service_arguments']

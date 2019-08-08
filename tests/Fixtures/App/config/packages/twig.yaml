@@ -1,0 +1,2 @@
+twig:
+    strict_variables: '%kernel.debug%' # Can be removed when Symfony 4 support dropped

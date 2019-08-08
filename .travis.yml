@@ -1,27 +1,36 @@
 language: php
 
-addons:
-    chrome: stable
-
-php:
-    - 7.4snapshot
-    - nightly
-
 matrix:
+    include:
+        - php: 7.1
+        - php: 7.3
+          env: PHPUNIT_FLAGS="--coverage-html coverage/"
+        - php: 7.4snapshot
+          env: COMPOSER_FLAGS="--prefer-lowest"
+        - php: nightly
+          env: COMPOSER="tests/php8-composer.json"
     fast_finish: true
     allow_failures:
         - php: nightly
 
 before_script:
+    - |
+        if [[ "$COVERAGE" = true ]] ; then
+          echo > $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/xdebug.ini
+          git clone --single-branch --branch=v1.0.6 --depth=1 https://github.com/krakjoe/pcov
+          cd pcov
+          phpize
+          ./configure
+          make clean install
+          echo "extension=pcov.so" > $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/pcov.ini
+          cd $TRAVIS_BUILD_DIR
+        fi
     - travis_retry composer self-update
-    - echo $TRAVIS_PHP_VERSION
-    - if [[ $TRAVIS_PHP_VERSION =~ ^7 ]] ; then travis_retry composer install --no-interaction --prefer-dist ; fi
-    - if [[ $TRAVIS_PHP_VERSION == nightly ]] ; then travis_retry composer install --no-interaction --prefer-dist --configuration tests/php8-composer.json ; fi
+    - travis_retry composer update --no-interaction --prefer-dist $COMPOSER_FLAGS
 
 script:
-    - vendor/bin/simple-phpunit
+    - vendor/bin/simple-phpunit $PHPUNIT_FLAGS
 
 cache:
     directories:
-        - vendor
         - $COMPOSER_CACHE_DIR

@@ -1,0 +1,3 @@
+index:
+    path: /
+    controller: Camelot\ImageAsset\Tests\Fixtures\App\TestController
