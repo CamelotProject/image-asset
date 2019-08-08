@@ -1,17 +1,21 @@
 <?php
-namespace Bolt\Thumbs\Tests;
 
-use Bolt\Filesystem;
-use Bolt\Filesystem\Adapter\Local;
-use Bolt\Filesystem\Handler\Image;
-use Bolt\Thumbs\Creator;
-use Bolt\Thumbs\CreatorInterface;
-use Bolt\Thumbs\FinderInterface;
-use Bolt\Thumbs\Responder;
-use Bolt\Thumbs\Transaction;
+declare(strict_types=1);
+
+namespace Camelot\ImageAssets\Tests\Response;
+
+use Camelot\Filesystem;
+use Camelot\Filesystem\Adapter\Local;
+use Camelot\Filesystem\Handler\Image;
+use Camelot\ImageAssets\Creator;
+use Camelot\ImageAssets\CreatorInterface;
+use Camelot\ImageAssets\FinderInterface;
+use Camelot\ImageAssets\Thumbnail\Responder;
+use Camelot\ImageAssets\Transaction;
 use Doctrine\Common\Cache\ArrayCache;
+use PHPUnit\Framework\TestCase;
 
-class ResponderTest extends \PHPUnit_Framework_TestCase
+class ResponderTest extends TestCase
 {
     /** @var Filesystem\Manager */
     protected $fs;
@@ -26,15 +30,15 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
     /** @var ArrayCache */
     protected $cache;
 
-    public function setup()
+    public function setup(): void
     {
         $images = new Filesystem\Filesystem(new Local(__DIR__ . '/images'));
         $tmp = new Filesystem\Filesystem(new Local(__DIR__ . '/tmp'));
         $web = new Filesystem\Filesystem(new Local(__DIR__ . '/tmp/web'));
         $this->fs = new Filesystem\Manager(
             [
-                'web'    => $web,
-                'tmp'    => $tmp,
+                'web' => $web,
+                'tmp' => $tmp,
                 'images' => $images,
             ]
         );
@@ -46,12 +50,12 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
         $this->cache = new ArrayCache();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->fs->deleteDir('tmp://web');
     }
 
-    public function testErrorImage()
+    public function testErrorImage(): void
     {
         $this->createResponder()
             ->respond(new Transaction('herp/derp.png'))
@@ -60,7 +64,7 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->creator->transaction->getErrorImage(), $this->errorImage);
     }
 
-    public function testSrcImage()
+    public function testSrcImage(): void
     {
         $this->createResponder()
             ->respond(new Transaction('herp/derp.png'))
@@ -69,7 +73,7 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->creator->transaction->getSrcImage(), $this->defaultImage);
     }
 
-    public function testCaching()
+    public function testCaching(): void
     {
         $this->creator = $this->getMockBuilder(Creator::class)->getMock();
         $this->creator->expects($this->once())
@@ -92,7 +96,7 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($transaction->getHash(), $thumbnail->getThumbnail());
     }
 
-    public function testStatic()
+    public function testStatic(): void
     {
         $responder = $this->createResponder(true);
 

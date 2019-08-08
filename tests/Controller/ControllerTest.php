@@ -1,15 +1,17 @@
 <?php
 
-namespace Bolt\Thumbs\Tests;
+declare(strict_types=1);
 
-use Bolt\Filesystem\Adapter\Local;
-use Bolt\Filesystem\Filesystem;
-use Bolt\Filesystem\Handler\Image;
-use Bolt\Filesystem\Handler\Image\Dimensions;
-use Bolt\Thumbs\Controller;
-use Bolt\Thumbs;
-use Bolt\Thumbs\Thumbnail;
-use Bolt\Thumbs\Transaction;
+namespace Camelot\ImageAssets\Tests\Controller;
+
+use Camelot\Filesystem\Adapter\Local;
+use Camelot\Filesystem\Filesystem;
+use Camelot\Filesystem\Handler\Image;
+use Camelot\Filesystem\Handler\Image\Dimensions;
+use Camelot\ImageAssets\Controller\Controller;
+use Camelot\ImageAssets\Image\Thumbnail;
+use Camelot\ImageAssets\Transaction;
+use PHPUnit_Framework_MockObject_MockObject;
 use Silex\Application;
 use Silex\Provider\ServiceControllerServiceProvider;
 use Silex\WebTestCase;
@@ -25,20 +27,20 @@ class ControllerTest extends WebTestCase
     public function getRoutesToTest()
     {
         return [
-            'crop action'    => ['/thumbs/123x456c/herp/derp.png', 'herp/derp.png', 'crop', 123, 456],
-            'resize action'  => ['/thumbs/123x456r/herp/derp.png', 'herp/derp.png', 'resize', 123, 456],
-            'border action'  => ['/thumbs/123x456b/herp/derp.png', 'herp/derp.png', 'border', 123, 456],
-            'fit action'     => ['/thumbs/123x456f/herp/derp.png', 'herp/derp.png', 'fit', 123, 456],
+            'crop action' => ['/thumbs/123x456c/herp/derp.png', 'herp/derp.png', 'crop', 123, 456],
+            'resize action' => ['/thumbs/123x456r/herp/derp.png', 'herp/derp.png', 'resize', 123, 456],
+            'border action' => ['/thumbs/123x456b/herp/derp.png', 'herp/derp.png', 'border', 123, 456],
+            'fit action' => ['/thumbs/123x456f/herp/derp.png', 'herp/derp.png', 'fit', 123, 456],
             'default action' => ['/thumbs/123x456/herp/derp.png', 'herp/derp.png', 'crop', 123, 456],
             'unknown action' => ['/thumbs/123x456z/herp/derp.png', 'herp/derp.png', 'crop', 123, 456],
-            'double size'    => ['/thumbs/123x456c/herp/derp@2x.png', 'herp/derp.png', 'crop', 246, 912],
+            'double size' => ['/thumbs/123x456c/herp/derp@2x.png', 'herp/derp.png', 'crop', 246, 912],
         ];
     }
 
     /**
      * @dataProvider getRoutesToTest
      */
-    public function testRoutes($path, $file, $action, $width, $height)
+    public function testRoutes($path, $file, $action, $width, $height): void
     {
         $client = $this->createClient();
 
@@ -47,9 +49,9 @@ class ControllerTest extends WebTestCase
     }
 
     /**
-     * Test alias restriction functionality
+     * Test alias restriction functionality.
      */
-    public function testIsRestricted()
+    public function testIsRestricted(): void
     {
         $app = $this->createApplication();
         $app['thumbnails.only_aliases'] = false;
@@ -58,11 +60,11 @@ class ControllerTest extends WebTestCase
         $this->assertInstanceOf(Thumbs\Response::class, $controller->thumbnail($app, $request, 'herp/derp.png', 'c', 123, 456));
 
         $app['thumbnails.only_aliases'] = true;
-        $this->setExpectedException(HttpException::class);
+        $this->expectException(HttpException::class);
         $controller->thumbnail($app, $request, 'herp/derp.png', 'c', 123, 456);
     }
 
-    public function testNotIsRestrictedWhenLoggedIn()
+    public function testNotIsRestrictedWhenLoggedIn(): void
     {
         $app = $this->createApplication();
         $controller = new Controller();
@@ -96,7 +98,7 @@ class ControllerTest extends WebTestCase
             ->method('isStarted')
             ->willReturn(true)
         ;
-        /** @var Session $session */
+        /* @var Session $session */
         $request->setSession($session);
 
         $app['thumbnails.only_aliases'] = true;
@@ -128,9 +130,9 @@ class ControllerTest extends WebTestCase
         return $app;
     }
 
-    protected function mockResponder($path, $file, $action, $width, $height)
+    protected function mockResponder($path, $file, $action, $width, $height): void
     {
-        /** @var \PHPUnit_Framework_MockObject_MockObject $mock */
+        /** @var PHPUnit_Framework_MockObject_MockObject $mock */
         $mock = $this->app['thumbnails'];
         $mock->expects($this->once())
             ->method('respond')

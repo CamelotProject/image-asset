@@ -1,8 +1,10 @@
 <?php
 
-namespace Bolt\Thumbs;
+declare(strict_types=1);
 
-use Bolt\Filesystem\Handler\Image;
+namespace Camelot\ImageAssets\Image;
+
+use Camelot\Filesystem\Handler\Image;
 
 /**
  * Stores thumbnail data and image file.
@@ -19,13 +21,17 @@ class Thumbnail
     /**
      * Thumbnail constructor.
      *
-     * @param Image  $image
      * @param string $thumbnail
      */
     public function __construct(Image $image, $thumbnail)
     {
         $this->image = $image;
         $this->thumbnail = $thumbnail;
+    }
+
+    public function __toString()
+    {
+        return $this->thumbnail;
     }
 
     /**
@@ -40,14 +46,6 @@ class Thumbnail
      * @return string
      */
     public function getThumbnail()
-    {
-        return $this->thumbnail;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __toString()
     {
         return $this->thumbnail;
     }

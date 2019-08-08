@@ -1,24 +1,28 @@
 <?php
 
-namespace Bolt\Thumbs\Tests;
+declare(strict_types=1);
 
-use Bolt\Filesystem\Adapter\Local;
-use Bolt\Filesystem\Filesystem;
-use Bolt\Filesystem\Handler\Image\Dimensions;
-use Bolt\Thumbs\ImageResource;
-use Bolt\Thumbs\Point;
+namespace Camelot\ImageAssets\Tests\Image;
 
-class ImageResourceTest extends \PHPUnit_Framework_TestCase
+use Camelot\Filesystem\Adapter\Local;
+use Camelot\Filesystem\Filesystem;
+use Camelot\Filesystem\Handler\Image\Dimensions;
+use Camelot\ImageAssets\Image\ImageResource;
+use Camelot\ImageAssets\Image\Point;
+use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
+
+class ImageResourceTest extends TestCase
 {
     /** @var Filesystem */
     protected $fs;
 
-    public function setup()
+    public function setup(): void
     {
         $this->fs = new Filesystem(new Local(__DIR__ . '/images'));
     }
 
-    public function testExifOrientation()
+    public function testExifOrientation(): void
     {
         $images = [
             '1-top-left',
@@ -46,17 +50,16 @@ class ImageResourceTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Invalid image data
-     */
-    public function testInvalidImageFromString()
+    public function testInvalidImageFromString(): void
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid image data');
+
         ImageResource::createFromString('');
         $this->addToAssertionCount(1);
     }
 
-    protected function assertDimensions(Dimensions $expected, Dimensions $actual)
+    protected function assertDimensions(Dimensions $expected, Dimensions $actual): void
     {
         $this->assertEquals($expected, $actual, "Expected dimension $expected does not equal actual $actual");
     }

@@ -1,6 +1,8 @@
 <?php
 
-namespace Bolt\Thumbs;
+declare(strict_types=1);
+
+namespace Camelot\ImageAssets\Image;
 
 use InvalidArgumentException;
 

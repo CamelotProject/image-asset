@@ -1,6 +1,8 @@
 <?php
 
-namespace Bolt\Thumbs;
+declare(strict_types=1);
+
+namespace Camelot\ImageAssets\Image;
 
 /**
  * Actions used when creating thumbnails.
@@ -9,10 +11,10 @@ namespace Bolt\Thumbs;
  */
 final class Action
 {
-    const CROP = 'crop';
-    const RESIZE = 'resize';
-    const BORDER = 'border';
-    const FIT = 'fit';
+    public const CROP = 'crop';
+    public const RESIZE = 'resize';
+    public const BORDER = 'border';
+    public const FIT = 'fit';
 
     /**
      * Singleton constructor.

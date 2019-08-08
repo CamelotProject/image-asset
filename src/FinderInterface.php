@@ -1,8 +1,10 @@
 <?php
 
-namespace Bolt\Thumbs;
+declare(strict_types=1);
 
-use Bolt\Filesystem\Handler\Image;
+namespace Camelot\ImageAssets;
+
+use Camelot\Filesystem\Handler\Image;
 
 /**
  * @author Carson Full <carsonfull@gmail.com>

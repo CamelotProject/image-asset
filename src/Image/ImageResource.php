@@ -1,11 +1,16 @@
 <?php
 
-namespace Bolt\Thumbs;
+declare(strict_types=1);
 
-use Bolt\Filesystem\Handler\Image;
-use Bolt\Filesystem\Handler\Image\Dimensions;
+namespace Camelot\ImageAssets\Image;
+
+use Camelot\Filesystem\Handler\Image;
+use Camelot\Filesystem\Handler\Image\Dimensions;
+use Exception;
 use InvalidArgumentException;
 use PHPExif\Exif;
+use RuntimeException;
+use function is_resource;
 
 /**
  * An object representation of GD's native image resources.
@@ -56,6 +61,33 @@ class ImageResource
         if ($this->type->getId() === IMAGETYPE_JPEG && static::$normalizeJpegOrientation) {
             $this->normalizeJpegOrientation();
         }
+    }
+
+    public function __toString()
+    {
+        try {
+            return $this->toString();
+        } catch (Exception $e) {
+            return '';
+        }
+    }
+
+    public function __clone()
+    {
+        $original = $this->resource;
+
+        $dim = $this->getDimensions();
+        $copy = static::createNew($dim, $this->getType());
+        imagecopy($copy->resource, $original, 0, 0, 0, 0, $dim->getWidth(), $dim->getHeight());
+
+        $this->resource = $copy->resource;
+
+        $this->resetInfo();
+    }
+
+    public function __destroy(): void
+    {
+        imagedestroy($this->resource);
     }
 
     /**
@@ -239,7 +271,6 @@ class ImageResource
     /**
      * Returns the color at a point.
      *
-     * @param Point $point
      *
      * @return Color
      */
@@ -291,7 +322,7 @@ class ImageResource
         Point $srcPoint,
         Dimensions $destDimensions,
         Dimensions $srcDimensions,
-        ImageResource $dest = null
+        self $dest = null
     ) {
         $dest = $dest ?: clone $this;
 
@@ -377,7 +408,7 @@ class ImageResource
      *
      * @param string $file
      */
-    public function toFile($file)
+    public function toFile($file): void
     {
         switch ($this->type->getId()) {
             case IMAGETYPE_BMP:
@@ -395,7 +426,7 @@ class ImageResource
                 imagepng($this->resource, $file, $compression);
                 break;
             default:
-                throw new \RuntimeException('Unknown image type');
+                throw new RuntimeException('Unknown image type');
         }
     }
 
@@ -410,7 +441,7 @@ class ImageResource
 
         try {
             $this->toFile(null);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             ob_end_clean();
             throw $e;
         }
@@ -422,45 +453,9 @@ class ImageResource
     }
 
     /**
-     * @inheritDoc
-     */
-    public function __toString()
-    {
-        try {
-            return $this->toString();
-        } catch (\Exception $e) {
-            return '';
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function __clone()
-    {
-        $original = $this->resource;
-
-        $dim = $this->getDimensions();
-        $copy = static::createNew($dim, $this->getType());
-        imagecopy($copy->resource, $original, 0, 0, 0, 0, $dim->getWidth(), $dim->getHeight());
-
-        $this->resource = $copy->resource;
-
-        $this->resetInfo();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function __destroy()
-    {
-        imagedestroy($this->resource);
-    }
-
-    /**
      * Returns whether JPEG orientation is normalized or not.
      *
-     * @return boolean
+     * @return bool
      */
     public static function isJpegOrientationNormalized()
     {
@@ -470,9 +465,9 @@ class ImageResource
     /**
      * Enable or disable JPEG orientation normalization.
      *
-     * @param boolean $normalizeJpegOrientation
+     * @param bool $normalizeJpegOrientation
      */
-    public static function setNormalizeJpegOrientation($normalizeJpegOrientation)
+    public static function setNormalizeJpegOrientation($normalizeJpegOrientation): void
     {
         static::$normalizeJpegOrientation = (bool) $normalizeJpegOrientation;
     }
@@ -484,7 +479,7 @@ class ImageResource
      *
      * @param int $quality Between 0 and 100
      */
-    public static function setQuality($quality)
+    public static function setQuality($quality): void
     {
         if (!is_numeric($quality)) {
             throw new InvalidArgumentException('Quality is expected to be numeric');
@@ -511,7 +506,7 @@ class ImageResource
 
     /**
      * Convert JPEG quality scale to PNG compression scale.
-     * JPEG: 0 (worst) - 100 (best). PNG: 0 (best) - 10 (worst)
+     * JPEG: 0 (worst) - 100 (best). PNG: 0 (best) - 10 (worst).
      *
      * @param int $quality
      *
@@ -539,9 +534,9 @@ class ImageResource
 
     /**
      * If orientation in EXIF data is not normal,
-     * flip and/or rotate image until it is correct
+     * flip and/or rotate image until it is correct.
      */
-    protected function normalizeJpegOrientation()
+    protected function normalizeJpegOrientation(): void
     {
         $orientation = $this->getExif()->getOrientation();
         $modes = [2 => 'H-', 3 => '-T', 4 => 'V-', 5 => 'VL', 6 => '-L', 7 => 'HL', 8 => '-R'];
@@ -556,7 +551,6 @@ class ImageResource
     /**
      * Verifies that a color is allocated.
      *
-     * @param Color $color
      *
      * @return Color
      */
@@ -570,9 +564,9 @@ class ImageResource
     }
 
     /**
-     * If image changes, info needs to be recreated
+     * If image changes, info needs to be recreated.
      */
-    protected function resetInfo()
+    protected function resetInfo(): void
     {
         $this->info = null;
     }

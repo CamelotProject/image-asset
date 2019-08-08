@@ -1,13 +1,14 @@
 <?php
 
-namespace Bolt\Thumbs;
+declare(strict_types=1);
+
+namespace Camelot\ImageAssets;
 
 interface CreatorInterface
 {
     /**
      * Creates a thumbnail for the given transaction.
      *
-     * @param Transaction $transaction
      *
      * @return string thumbnail data
      */

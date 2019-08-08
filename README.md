@@ -1,17 +1,17 @@
-Bolt Thumbs
+Camelot Thumbs
 ===========
 
-Image Thumbnail handler for Bolt
---------------------------------
+Image Thumbnail handler
+-----------------------
 
 
 ### Installation
 
-Bolt Thumbs is installed as a default dependency of Bolt. However, for use 
+Camelot Thumbs is installed as a default dependency of Bolt. However, for use 
 independently it can be included in your Composer project:
 
 ```bash
-composer require bolt/thumbs:^3.2
+composer require camelot/thumbs:^3.2
 ```
 
 Should you want to work with the development branch(es), you can specficy those
@@ -20,13 +20,13 @@ as Composer requirements instead.
 To install the 3.3 _develoment_ branch:
 
 ```bash
-composer require bolt/thumbs:3.3.x@dev
+composer require camelot/thumbs:3.3.x@dev
 ```
 
 Alternatively to install the master branch:
 
 ```bash
-composer require bolt/thumbs:dev-master@dev
+composer require camelot/thumbs:dev-master@dev
 ```
 
 ### Configuration
@@ -40,5 +40,5 @@ your reigstration phase, e.g.:
 
 ```php
     /** @var \Silex\Application $app */
-    $app->register(new \Bolt\Provider\ThumbnailsServiceProvider())
+    $app->register(new \Camelot\Provider\ThumbnailsServiceProvider())
 ```

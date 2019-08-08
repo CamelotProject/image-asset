@@ -1,6 +1,8 @@
 <?php
 
-namespace Bolt\Thumbs;
+declare(strict_types=1);
+
+namespace Camelot\ImageAssets\Image;
 
 use InvalidArgumentException;
 
@@ -26,6 +28,11 @@ class Point
     {
         $this->setX($x);
         $this->setY($y);
+    }
+
+    public function __toString()
+    {
+        return sprintf('(%d, %d)', $this->x, $this->y);
     }
 
     /**
@@ -79,19 +86,11 @@ class Point
     }
 
     /**
-     * @inheritDoc
-     */
-    public function __toString()
-    {
-        return sprintf('(%d, %d)', $this->x, $this->y);
-    }
-
-    /**
      * Verifies that the coordinate is valid.
      *
      * @param int|mixed $coordinate
      */
-    protected function verify($coordinate)
+    protected function verify($coordinate): void
     {
         if (!is_numeric($coordinate)) {
             throw new InvalidArgumentException('Coordinate is expected to be numeric');
