@@ -1,30 +1,26 @@
 language: php
 
-sudo: false
+addons:
+    chrome: stable
 
 php:
-  - 5.5
-  - 5.6
-  - 7.0
-  - 7.1
-  - hhvm
+    - 7.3
+    - 7.4
+    - nightly
 
 matrix:
-  fast_finish: true
-  allow_failures:
-    - php: 7.1
-    - php: hhvm
+    fast_finish: true
+    allow_failures:
+        - php: nightly
 
 before_script:
-  - travis_retry composer self-update
-  - travis_retry composer install --no-interaction --prefer-dist
+    - travis_retry composer self-update
+    - travis_retry composer install --no-interaction --prefer-dist
 
 script:
-  - phpunit
-
-after_script:
+    - phpunit
 
 cache:
-  directories:
-    - vendor
-    - $COMPOSER_CACHE_DIR
+    directories:
+        - vendor
+        - $COMPOSER_CACHE_DIR
