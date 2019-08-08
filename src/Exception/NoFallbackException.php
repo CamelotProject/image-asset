@@ -12,8 +12,7 @@ use RuntimeException;
  */
 class NoFallbackException extends RuntimeException implements ExceptionInterface
 {
-    /** @var ImageInterface */
-    private $image;
+    private ImageInterface $image;
 
     public function __construct(ImageInterface $image, NotFoundHttpException $previous, int $code = 1)
     {

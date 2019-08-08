@@ -18,12 +18,9 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 final class Creator implements CreatorInterface
 {
-    /** @var Resizer */
-    private $resizer;
-    /** @var Rescaler */
-    private $rescaler;
-    /** @var EventDispatcherInterface */
-    private $dispatcher;
+    private Resizer $resizer;
+    private Rescaler $rescaler;
+    private EventDispatcherInterface $dispatcher;
 
     public function __construct(Rescaler $rescaler, Resizer $resizer, EventDispatcherInterface $dispatcher)
     {

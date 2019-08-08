@@ -9,10 +9,8 @@ namespace Camelot\ImageAsset\Image\Attributes;
  */
 final class Point
 {
-    /** @var int */
-    private $x;
-    /** @var int */
-    private $y;
+    private int $x;
+    private int $y;
 
     public function __construct(int $x = 0, int $y = 0)
     {

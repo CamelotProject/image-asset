@@ -14,6 +14,7 @@ use Camelot\Thrower\Thrower;
 use ErrorException;
 use JsonSerializable;
 use PHPExif\Reader\Reader;
+use PHPExif\Reader\ReaderInterface;
 use Serializable;
 use function in_array;
 
@@ -22,23 +23,15 @@ use function in_array;
  */
 final class Info implements JsonSerializable, Serializable
 {
-    /** @var Dimensions */
-    private $dimensions;
-    /** @var TypeInterface */
-    private $type;
-    /** @var int */
-    private $bits;
-    /** @var int */
-    private $channels;
-    /** @var ?string */
-    private $mime;
-    /** @var Exif */
-    private $exif;
-    /** @var bool */
-    private $valid;
+    private Dimensions $dimensions;
+    private TypeInterface $type;
+    private int $bits;
+    private int $channels;
+    private ?string $mime;
+    private Exif $exif;
+    private bool $valid;
 
-    /** @var ?ReaderInterface */
-    private static $exifReader = null;
+    private static ?ReaderInterface $exifReader = null;
 
     public function __construct(Dimensions $dimensions, TypeInterface $type, int $bits, int $channels, ?string $mime, Exif $exif)
     {

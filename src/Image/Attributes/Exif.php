@@ -65,7 +65,7 @@ final class Exif extends PHPExif\Exif
         if ($gps === false) {
             return null;
         }
-        $parts = array_map(function ($v) { return (float) $v; }, explode(',', $gps));
+        $parts = array_map(fn ($v) => (float) $v, explode(',', $gps));
 
         return $parts[$index] ?? null;
     }

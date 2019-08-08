@@ -10,6 +10,7 @@ return Camelot\CsFixer\Config::create()
     )
     ->addRules([
         '@PhpCsFixer:risky' => true,
+        '@PHP73Migration' => true,
         '@PHPUnit60Migration:risky' => true,
         '@PHPUnit75Migration:risky' => true,
         'declare_strict_types' => true,

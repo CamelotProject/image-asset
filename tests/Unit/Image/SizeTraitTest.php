@@ -41,8 +41,7 @@ final class SizeTraitTest extends TestCase
         return new class($size) {
             use SizeTrait;
 
-            /** @var int */
-            private $size;
+            private int $size;
 
             public function __construct(int $size)
             {

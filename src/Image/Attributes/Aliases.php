@@ -13,7 +13,7 @@ use function is_object;
 final class Aliases
 {
     /** @var Alias[] */
-    private $aliases = [];
+    private array $aliases = [];
 
     public function __construct(iterable $aliases)
     {
@@ -65,6 +65,6 @@ final class Aliases
 
     public function getRouterRegex(): string
     {
-        return implode('|', array_keys(array_map(function (Alias $alias): string { return $alias->getName(); }, $this->aliases)));
+        return implode('|', array_keys(array_map(fn (Alias $alias): string => $alias->getName(), $this->aliases)));
     }
 }

@@ -14,14 +14,10 @@ use ReflectionProperty;
 
 trait PhaseTrait
 {
-    /** @var string */
-    private $requestPath;
-    /** @var ImageInterface */
-    private $requestImage;
-    /** @var Action */
-    private $action;
-    /** @var Dimensions */
-    private $targetDimensions;
+    private string $requestPath;
+    private ImageInterface $requestImage;
+    private Action $action;
+    private Dimensions $targetDimensions;
 
     /**
      * @internal

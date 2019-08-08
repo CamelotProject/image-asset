@@ -103,7 +103,7 @@ final class Configuration implements ConfigurationInterface
                             ->enumNode('action')
                                 ->values(['border', 'crop', 'fit', 'resize'])
                                 ->beforeNormalization()
-                                    ->always(function (?string $v): string { return $v ? Action::resolve($v) : Action::CROP; })
+                                    ->always(fn (?string $v): string => $v ? Action::resolve($v) : Action::CROP)
                                 ->end()
                             ->end()
                         ->end()

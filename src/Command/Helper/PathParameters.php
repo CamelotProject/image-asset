@@ -13,14 +13,10 @@ use function dirname;
 
 final class PathParameters
 {
-    /** @var string */
-    private $inputFilePath;
-    /** @var FileInterface */
-    private $inputFile;
-    /** @var string */
-    private $outputPath;
-    /** @var FilesystemInterface */
-    private $outputFilesystem;
+    private string $inputFilePath;
+    private FileInterface $inputFile;
+    private string $outputPath;
+    private FilesystemInterface $outputFilesystem;
 
     public function __construct(string $inputFilePath, FileInterface $inputFile, string $outputPath, FilesystemInterface $outputFilesystem)
     {

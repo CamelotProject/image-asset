@@ -18,16 +18,12 @@ final class Transaction
     public const PASS = 1;
     public const FAIL = 2;
 
-    /** @var string */
-    private $id;
-    /** @var Closure */
-    private $lazyJob;
-    /** @var PhaseInterface|RequisitionInterface|JobInterface */
-    private $current;
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var ?int */
-    private $result = null;
+    private string $id;
+    private ?Closure $lazyJob;
+    /** @var RequisitionInterface|JobInterface */
+    private PhaseInterface $current;
+    private LoggerInterface $logger;
+    private ?int $result = null;
 
     /**
      * @param callable $lazyJob Callable matching the signature: fn(Transaction $transaction, ...$args): JobInterface

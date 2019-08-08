@@ -20,8 +20,7 @@ use ReflectionMethod;
  */
 final class InfoTest extends TestCase
 {
-    /** @var Filesystem */
-    protected $filesystem;
+    protected Filesystem $filesystem;
 
     protected function setUp(): void
     {

@@ -26,16 +26,12 @@ final class ImageResource
 {
     /** @var resource */
     private $resource;
-    /** @var ?TypeInterface */
-    private $type;
-    /** @var ?Info */
-    private $info;
+    private ?TypeInterface $type;
+    private ?Info $info;
 
     /** Quality setting for JPEGs and PNGs */
-    /** @var int */
-    private static $quality = 80;
-    /** @var bool */
-    private static $normalizeJpegOrientation = true;
+    private static int $quality = 80;
+    private static bool $normalizeJpegOrientation = true;
 
     public function __construct($resource, TypeInterface $type = null, Info $info = null)
     {

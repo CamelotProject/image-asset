@@ -21,19 +21,13 @@ use const DIRECTORY_SEPARATOR;
 
 final class GenerateThumbsCommand extends Command
 {
-    /** @var string */
     protected static $defaultName = 'camelot:image:generate-thumbs';
 
-    /** @var BatchProcessor */
-    private $batchProcessor;
-    /** @var FilesystemInterface */
-    private $thumbnailFilesystem;
-    /** @var Aliases */
-    private $aliases;
-    /** @var string */
-    private $projectDir;
-    /** @var string */
-    private $publicDir;
+    private BatchProcessor $batchProcessor;
+    private FilesystemInterface $thumbnailFilesystem;
+    private Aliases $aliases;
+    private string $projectDir;
+    private string $publicDir;
 
     public function __construct(BatchProcessor $batchProcessor, FilesystemInterface $thumbnailFilesystem, Aliases $aliases, string $projectDir, string $publicDir)
     {

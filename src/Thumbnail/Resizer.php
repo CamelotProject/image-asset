@@ -14,10 +14,8 @@ use Imagine\Image\Box;
 
 final class Resizer
 {
-    /** @var SvgImagine */
-    private $svgImagine;
-    /** @var Color */
-    private $background;
+    private SvgImagine $svgImagine;
+    private Color $background;
 
     public function __construct(SvgImagine $svgImagine, Color $background)
     {

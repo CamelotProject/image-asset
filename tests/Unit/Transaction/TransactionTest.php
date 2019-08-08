@@ -115,9 +115,9 @@ final class TransactionTest extends TestCase
 
     public function providerBadCallable(): iterable
     {
-        yield 'Invalid type' => [function () { return 44; }, 'integer'];
-        yield 'Invalid interface' => [function () { return new stdClass(); }, stdClass::class];
-        yield 'Requisition instead of job' => [function () { return Requisition::create(); }, Requisition::class];
+        yield 'Invalid type' => [fn() => 44, 'integer'];
+        yield 'Invalid interface' => [fn() => new stdClass(), stdClass::class];
+        yield 'Requisition instead of job' => [fn() => Requisition::create(), Requisition::class];
     }
 
     /**

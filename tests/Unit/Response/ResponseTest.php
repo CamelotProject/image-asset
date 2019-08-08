@@ -16,8 +16,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class ResponseTest extends TestCase
 {
-    /** @var Filesystem */
-    protected $filesystem;
+    protected Filesystem $filesystem;
 
     protected function setUp(): void
     {

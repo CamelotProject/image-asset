@@ -8,8 +8,7 @@ use Camelot\ImageAsset\Transaction\JobInterface;
 
 final class Rescaler
 {
-    /** @var bool */
-    private $limitUpscaling;
+    private bool $limitUpscaling;
 
     public function __construct(bool $limitUpscaling)
     {

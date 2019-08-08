@@ -10,10 +10,8 @@ final class CreatorEvent
 {
     public const THUMBNAIL_CREATE = 'thumbnail.create';
 
-    /** @var JobInterface */
-    private $job;
-    /** @var string */
-    private $data;
+    private JobInterface $job;
+    private string $data;
 
     public function __construct(JobInterface $job, string $data)
     {

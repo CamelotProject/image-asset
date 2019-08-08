@@ -1,6 +1,8 @@
 Camelot Image Asset
 ===================
 
+**NOTE:** For PHP `< 7.4.0` support use the `1.0` branch.
+
 Installation
 ------------
 

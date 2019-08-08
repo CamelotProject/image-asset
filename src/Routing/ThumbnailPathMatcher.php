@@ -18,20 +18,13 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class ThumbnailPathMatcher implements ThumbnailPathMatcherInterface
 {
-    /** @var ManifestInterface */
-    private $manifest;
-    /** @var Aliases */
-    private $alases;
-    /** @var Fallback */
-    private $fallback;
-    /** @var FilesystemInterface */
-    private $filesystem;
-    /** @var TransactionBuilder */
-    private $transactionBuilder;
-    /** @var ProcessorInterface */
-    private $processor;
-    /** @var UrlGeneratorInterface */
-    private $urlGenerator;
+    private ManifestInterface $manifest;
+    private Aliases $alases;
+    private Fallback $fallback;
+    private FilesystemInterface $filesystem;
+    private TransactionBuilder $transactionBuilder;
+    private ProcessorInterface $processor;
+    private UrlGeneratorInterface $urlGenerator;
 
     public function __construct(ManifestInterface $manifest, Aliases $alases, Fallback $fallback, FilesystemInterface $filesystem, TransactionBuilder $transactionBuilder, ProcessorInterface $processor, UrlGeneratorInterface $urlGenerator)
     {

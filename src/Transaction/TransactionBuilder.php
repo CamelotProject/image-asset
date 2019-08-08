@@ -13,10 +13,8 @@ use Psr\Log\NullLogger;
 
 final class TransactionBuilder
 {
-    /** @var FallbackInterface */
-    private $fallback;
-    /** @var LoggerInterface */
-    private $logger;
+    private FallbackInterface $fallback;
+    private LoggerInterface $logger;
 
     public function __construct(FallbackInterface $fallback, LoggerInterface $logger = null)
     {
@@ -28,8 +26,8 @@ final class TransactionBuilder
     {
         return new Transaction(
             $this->createRequisition($requestPath, $action, $targetDimensions, $requestImage),
-            function (Transaction $transaction): JobInterface { return Job::create($transaction->getCurrent()); },
-            $this->logger
+            fn (Transaction $transaction): JobInterface => Job::create($transaction->getCurrent()),
+            $this->logger,
         );
     }
 
@@ -42,7 +40,7 @@ final class TransactionBuilder
             ->setRequestImage($job->getRequestImage())
         ;
 
-        return new Transaction($req, function (JobInterface $job) { return $job; }, $this->logger);
+        return new Transaction($req, fn (JobInterface $job) => $job, $this->logger);
     }
 
     private function createRequisition(?string $requestPath, ?Action $action, ?Dimensions $targetDimensions = null, ?FileInterface $requestImage = null): RequisitionInterface

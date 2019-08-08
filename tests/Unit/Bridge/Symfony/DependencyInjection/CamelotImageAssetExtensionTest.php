@@ -22,7 +22,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 final class CamelotImageAssetExtensionTest extends TestCase
 {
-    private $config = [
+    private array $config = [
         'routing' => [
             'mount_point' => '/thumbs',
         ],

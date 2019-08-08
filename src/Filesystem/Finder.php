@@ -12,18 +12,12 @@ use Webmozart\PathUtil\Path;
 
 final class Finder implements FinderInterface
 {
-    /** @var FilesystemInterface */
-    private $filesystem;
-    /** @var array */
-    private $names = [];
-    /** @var array */
-    private $notNames = [];
-    /** @var array */
-    private $dirs = [];
-    /** @var array */
-    private $exclude = [];
-    /** @var array */
-    private $depths = [];
+    private FilesystemInterface $filesystem;
+    private array $names = [];
+    private array $notNames = [];
+    private array $dirs = [];
+    private array $exclude = [];
+    private array $depths = [];
 
     public function __construct(FilesystemInterface $filesystem)
     {

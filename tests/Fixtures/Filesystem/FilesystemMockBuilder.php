@@ -10,14 +10,10 @@ use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;
 
 final class FilesystemMockBuilder
 {
-    /** @var ?string */
-    private $public;
-    /** @var ?string */
-    private $imagesDir;
-    /** @var ?string */
-    private $thumbsDir;
-    /** @var ?string */
-    private $tempDir;
+    private ?string $public;
+    private ?string $imagesDir;
+    private ?string $thumbsDir;
+    private ?string $tempDir;
 
     public function __construct(?string $public = null, ?string $imagesDir = null, ?string $thumbsDir = null, ?string $tempDir = null)
     {

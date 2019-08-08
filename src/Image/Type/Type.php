@@ -12,10 +12,8 @@ use Camelot\ImageAsset\Exception\InvalidArgumentException;
 final class Type
 {
     /** @var TypeInterface[] */
-    /** @var array */
-    private static $types = [];
-    /** @var bool */
-    private static $initialized = false;
+    private static array $types = [];
+    private static bool $initialized = false;
 
     /** @codeCoverageIgnore */
     private function __construct()
@@ -66,7 +64,7 @@ final class Type
      */
     public static function getMimeTypes(): array
     {
-        return array_map(function (TypeInterface $type) { return $type->getMimeType(); }, static::getTypes());
+        return array_map(fn (TypeInterface $type) => $type->getMimeType(), static::getTypes());
     }
 
     /**
@@ -76,7 +74,7 @@ final class Type
      */
     public static function getExtensions(bool $includeDot = false): array
     {
-        $extensions = array_filter(array_map(function (TypeInterface $type) use ($includeDot) { return $type->getExtension($includeDot); }, static::getTypes()));
+        $extensions = array_filter(array_map(fn (TypeInterface $type) => $type->getExtension($includeDot), static::getTypes()));
         $extensions[] = ($includeDot ? '.' : '') . 'jpg';
 
         return $extensions;

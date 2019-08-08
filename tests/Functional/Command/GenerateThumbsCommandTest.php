@@ -21,12 +21,9 @@ final class GenerateThumbsCommandTest extends KernelTestCase
 {
     use ThumbnailAssertTrait;
 
-    /** @var string */
-    private $mountPath;
-    /** @var string */
-    private $saveSubPath;
-    /** @var Filesystem */
-    private $imageFilesystem;
+    private string $mountPath;
+    private string $saveSubPath;
+    private Filesystem $imageFilesystem;
 
     protected function setUp(): void
     {

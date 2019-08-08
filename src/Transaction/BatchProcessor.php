@@ -14,10 +14,8 @@ use Camelot\ImageAsset\Image\Dimensions;
 
 final class BatchProcessor
 {
-    /** @var TransactionBuilder */
-    private $transactionBuilder;
-    /** @var ProcessorInterface */
-    private $processor;
+    private TransactionBuilder $transactionBuilder;
+    private ProcessorInterface $processor;
 
     public function __construct(TransactionBuilder $transactionBuilder, ProcessorInterface $processor)
     {

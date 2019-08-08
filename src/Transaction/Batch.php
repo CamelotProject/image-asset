@@ -12,22 +12,15 @@ use Throwable;
 
 final class Batch
 {
-    /** @var iterable */
-    private $files;
-    /** @var int */
-    private $width;
-    /** @var int */
-    private $height;
-    /** @var Action */
-    private $action;
+    private iterable $files;
+    private int $width;
+    private int $height;
+    private Action $action;
     /** @var Transaction[] */
-    private $transactions = [];
-    /** @var iterable */
-    private $results = [];
-    /** @var iterable */
-    private $invalidFiles = [];
-    /** @var iterable */
-    private $exceptions = [];
+    private iterable $transactions = [];
+    private iterable $results = [];
+    private iterable $invalidFiles = [];
+    private iterable $exceptions = [];
 
     public function __construct(iterable $files, int $width, int $height, Action $action)
     {

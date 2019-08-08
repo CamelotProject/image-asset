@@ -24,12 +24,9 @@ final class ProcessorTest extends TestCase
 {
     use ThumbnailAssertTrait;
 
-    /** @var CreatorInterface */
-    private $creator;
-    /** @var FilesystemInterface */
-    private $imagesFilesystem;
-    /** @var FilesystemInterface */
-    private $thumbsFilesystem;
+    private CreatorInterface $creator;
+    private FilesystemInterface $imagesFilesystem;
+    private FilesystemInterface $thumbsFilesystem;
 
     protected function setUp(): void
     {

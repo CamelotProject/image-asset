@@ -15,14 +15,10 @@ trait FileTrait
 {
     use SizeTrait;
 
-    /** @var FilesystemInterface */
-    private $filesystem;
-    /** @var SplFileInfo */
-    private $fileInfo;
-    /** @var string */
-    private $relativePath;
-    /** @var string */
-    private $relativePathname;
+    private FilesystemInterface $filesystem;
+    private SplFileInfo $fileInfo;
+    private string $relativePath;
+    private string $relativePathname;
 
     public function __construct(FilesystemInterface $filesystem, string $path)
     {

@@ -20,12 +20,9 @@ use Symfony\Component\HttpFoundation\Request;
  */
 final class ControllerRouteTest extends WebTestCase
 {
-    /** @var ?string */
-    private static $mountPoint = null;
-    /** @var ?string */
-    private static $placeholderThumbPath = null;
-    /** @var ?string */
-    private static $placeholderRequestPath = null;
+    private static ?string $mountPoint = null;
+    private static ?string $placeholderThumbPath = null;
+    private static ?string $placeholderRequestPath = null;
 
     public static function setUpBeforeClass(): void
     {

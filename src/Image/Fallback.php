@@ -12,18 +12,12 @@ use Camelot\ImageAsset\Filesystem\ImageInterface;
  */
 final class Fallback implements FallbackInterface
 {
-    /** @var FilesystemInterface */
-    private $filesystem;
-    /** @var Dimensions */
-    private $defaultDimensions;
-    /** @var string */
-    private $defaultImagePath;
-    /** @var string */
-    private $errorImagePath;
-    /** @var ?ImageInterface */
-    private $defaultImage = null;
-    /** @var ?ImageInterface */
-    private $errorImage = null;
+    private FilesystemInterface $filesystem;
+    private Dimensions $defaultDimensions;
+    private string $defaultImagePath;
+    private string $errorImagePath;
+    private ?ImageInterface $defaultImage = null;
+    private ?ImageInterface $errorImage = null;
 
     public function __construct(
         FilesystemInterface $filesystem,

@@ -9,10 +9,8 @@ namespace Camelot\ImageAsset\Image;
  */
 final class Dimensions
 {
-    /** @var int */
-    private $width;
-    /** @var int */
-    private $height;
+    private int $width;
+    private int $height;
 
     public function __construct(int $width = 0, int $height = 0)
     {

@@ -10,8 +10,7 @@ use Webmozart\PathUtil\Path;
 
 final class Manifest implements ManifestInterface
 {
-    /** @var CacheItemPoolInterface */
-    private $cache;
+    private CacheItemPoolInterface $cache;
 
     public function __construct(CacheItemPoolInterface $cache)
     {

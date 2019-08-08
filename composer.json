@@ -18,7 +18,7 @@
         }
     ],
     "require": {
-        "php": "^7.1",
+        "php": "^7.4",
         "ext-fileinfo": "*",
         "ext-gd": "*",
         "ext-json": "*",
@@ -32,7 +32,13 @@
     },
     "require-dev": {
         "camelot/coding-style": "^2.0",
+        "doctrine/cache": "HERE DUE TO SYMFONY PHP 7.4 BUG",
+        "doctrine/cache": "^1.8",
         "friendsofphp/php-cs-fixer": "^2.15",
+        "psr/http-message": "HERE DUE TO SYMFONY PHP 7.4 BUG",
+        "psr/http-message": "^1.0",
+        "psr/simple-cache": "HERE DUE TO SYMFONY PHP 7.4 BUG",
+        "psr/simple-cache": "^1.0",
         "symfony/asset": "^4.3 || ^5.0",
         "symfony/browser-kit": "^4.3 || ^5.0",
         "symfony/css-selector": "^4.3 || ^5.0",
@@ -42,6 +48,8 @@
         "symfony/phpunit-bridge": "^4.3 || ^5.0",
         "symfony/security-bundle": "^4.3 || ^5.0",
         "symfony/twig-bundle": "^4.3 || ^5.0",
+        "symfony/validator": "HERE DUE TO SYMFONY PHP 7.4 BUG",
+        "symfony/validator": "^4.3 || ^5.0",
         "symfony/yaml": "^4.3 || ^5.0",
         "twig/twig": "^2.10 || ^3.0",
         "vimeo/psalm": "^3.4"

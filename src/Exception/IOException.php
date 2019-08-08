@@ -11,8 +11,7 @@ use Throwable;
  */
 class IOException extends RuntimeException
 {
-    /** @var ?string */
-    private $path;
+    private ?string $path;
 
     public function __construct(string $message, ?string $path = null, int $code = 0, ?Throwable $previous = null)
     {

@@ -21,12 +21,9 @@ use Throwable;
  */
 final class Processor implements ProcessorInterface
 {
-    /** @var CreatorInterface */
-    private $creator;
-    /** @var NameGenerator */
-    private $nameGenerator;
-    /** @var FilesystemInterface */
-    private $targetFilesystem;
+    private CreatorInterface $creator;
+    private NameGenerator $nameGenerator;
+    private FilesystemInterface $targetFilesystem;
 
     public function __construct(CreatorInterface $creator, NameGenerator $nameGenerator, FilesystemInterface $targetFilesystem)
     {

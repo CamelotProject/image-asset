@@ -25,22 +25,14 @@ use Throwable;
 
 final class ImageResponder implements ImageResponderInterface
 {
-    /** @var TransactionBuilder */
-    private $transactionBuilder;
-    /** @var ProcessorInterface */
-    private $processor;
-    /** @var FallbackInterface */
-    private $fallback;
-    /** @var FilesystemInterface */
-    private $filesystem;
-    /** @var LoggerInterface */
-    private $logger;
-    /** @var Aliases */
-    private $aliases;
-    /** @var ?int */
-    private $cacheTime;
-    /** @var bool */
-    private $debug;
+    private TransactionBuilder $transactionBuilder;
+    private ProcessorInterface $processor;
+    private FallbackInterface $fallback;
+    private FilesystemInterface $filesystem;
+    private LoggerInterface $logger;
+    private Aliases $aliases;
+    private ?int $cacheTime;
+    private bool $debug;
 
     public function __construct(TransactionBuilder $transactionBuilder, ProcessorInterface $processor, FallbackInterface $fallback, FilesystemInterface $filesystem, LoggerInterface $logger, Aliases $aliases, ?int $cacheTime, bool $debug)
     {

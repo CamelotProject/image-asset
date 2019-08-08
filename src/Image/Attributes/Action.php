@@ -17,8 +17,7 @@ final class Action
     public const FIT = 'fit';
     public const RESIZE = 'resize';
 
-    /** @var string */
-    private $action;
+    private string $action;
 
     private function __construct(string $action)
     {

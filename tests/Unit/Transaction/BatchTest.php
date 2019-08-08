@@ -19,8 +19,7 @@ use SplFileInfo;
  */
 final class BatchTest extends TestCase
 {
-    /** @var array */
-    private $files;
+    private array $files;
 
     protected function setUp(): void
     {

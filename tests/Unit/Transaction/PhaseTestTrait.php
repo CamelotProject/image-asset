@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Camelot\ImageAsset\Tests\Unit\Transaction;
 
 use Camelot\ImageAsset\Exception\RuntimeException;
+use Camelot\ImageAsset\Filesystem\FileInterface;
 use Camelot\ImageAsset\Filesystem\FilesystemInterface;
 use Camelot\ImageAsset\Filesystem\ImageInterface;
 use Camelot\ImageAsset\Image\Attributes\Action;
@@ -12,6 +13,7 @@ use Camelot\ImageAsset\Image\Dimensions;
 use Camelot\ImageAsset\Image\FallbackInterface;
 use Camelot\ImageAsset\Tests\Fixtures\Filesystem\FallbackMockBuilder;
 use Camelot\ImageAsset\Tests\Fixtures\Filesystem\FilesystemMockBuilder;
+use Camelot\ImageAsset\Thumbnail\ThumbnailInterface;
 use Camelot\ImageAsset\Transaction\JobInterface;
 use Camelot\ImageAsset\Transaction\PhaseInterface;
 use Camelot\ImageAsset\Transaction\PhaseTrait;
@@ -36,14 +38,10 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 trait PhaseTestTrait
 {
-    /** @var ImageInterface */
-    private $requestImage;
-    /** @var FilesystemInterface */
-    private $filesystem;
-    /** @var ProcessorInterface */
-    private $processor;
-    /** @var RequestStack */
-    private $requestStack;
+    private ImageInterface $requestImage;
+    private FilesystemInterface $filesystem;
+    private ProcessorInterface $processor;
+    private RequestStack $requestStack;
 
     protected function setUp(): void
     {
@@ -55,13 +53,13 @@ trait PhaseTestTrait
 
     public function testCreate(): void
     {
-        self::assertInstanceOf(PhaseInterface::class, $this->getPhase());
+        static::assertInstanceOf(PhaseInterface::class, $this->getPhase());
     }
 
     public function testCreateWithArgs(): void
     {
         $phase = $this->getPhase(['koala' => 42]);
-        self::assertSame(42, $phase->getKoala());
+        static::assertSame(42, $phase->getKoala());
     }
 
     public function testCreateInvalid(): void
@@ -72,32 +70,32 @@ trait PhaseTestTrait
 
     public function testGetTargetDimensions(): void
     {
-        self::assertInstanceOf(Dimensions::class, $this->getPhase()->getTargetDimensions());
+        static::assertInstanceOf(Dimensions::class, $this->getPhase()->getTargetDimensions());
     }
 
     public function testGetRequestImage(): void
     {
-        self::assertSame($this->requestImage, $this->getPhase()->getRequestImage());
+        static::assertSame($this->requestImage, $this->getPhase()->getRequestImage());
     }
 
     public function testGetHash(): void
     {
-        self::assertSame('default.png-crop-0-0', $this->getPhase()->getHash());
+        static::assertSame('default.png-crop-0-0', $this->getPhase()->getHash());
     }
 
     public function testGetRequestPath(): void
     {
-        self::assertSame('/default.png', $this->getPhase()->getRequestPath());
+        static::assertSame('/default.png', $this->getPhase()->getRequestPath());
     }
 
     public function testGetAction(): void
     {
-        self::assertInstanceOf(Action::class, $this->getPhase()->getAction());
+        static::assertInstanceOf(Action::class, $this->getPhase()->getAction());
     }
 
     public function testGetFilePath(): void
     {
-        self::assertSame('default.png', $this->getPhase()->getRequestFilePath());
+        static::assertSame('default.png', $this->getPhase()->getRequestFilePath());
     }
 
     public function providerInvalidPhase(): iterable
@@ -114,12 +112,9 @@ trait PhaseTestTrait
         $class = new class('/default.png', Action::createCrop(), new Dimensions(), $this->requestImage, $fallback) implements PhaseInterface {
             use PhaseTrait;
 
-            /** @var ?ThumbnailInterface */
-            public $thumbnail = null;
-            /** @var ?FileInterface */
-            public $file = null;
-            /** @var int */
-            public $koala = 0;
+            public ?ThumbnailInterface $thumbnail = null;
+            public ?FileInterface $file = null;
+            public int $koala = 0;
 
             public function __construct(
                 string $requestPath,

@@ -22,17 +22,12 @@ use function dirname;
 
 final class GenerateThumbCommand extends Command
 {
-    /** @var string */
     protected static $defaultName = 'camelot:image:generate-thumb';
 
-    /** @var TransactionBuilder */
-    private $builder;
-    /** @var CreatorInterface */
-    private $creator;
-    /** @var FilesystemInterface */
-    private $thumbnailFilesystem;
-    /** @var string */
-    private $projectDir;
+    private TransactionBuilder $builder;
+    private CreatorInterface $creator;
+    private FilesystemInterface $thumbnailFilesystem;
+    private string $projectDir;
 
     public function __construct(TransactionBuilder $builder, CreatorInterface $creator, FilesystemInterface $thumbnailFilesystem, string $projectDir)
     {

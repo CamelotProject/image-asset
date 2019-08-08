@@ -16,8 +16,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class NoFallbackExceptionTest extends TestCase
 {
-    /** @var Filesystem */
-    private $filesystem;
+    private Filesystem $filesystem;
 
     protected function setUp(): void
     {

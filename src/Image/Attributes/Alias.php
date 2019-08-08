@@ -6,14 +6,10 @@ namespace Camelot\ImageAsset\Image\Attributes;
 
 final class Alias
 {
-    /** @var string */
-    private $name;
-    /** @var string */
-    private $action;
-    /** @var int */
-    private $width;
-    /** @var int */
-    private $height;
+    private string $name;
+    private string $action;
+    private int $width;
+    private int $height;
 
     public function __construct(string $name, string $action, int $width, int $height)
     {

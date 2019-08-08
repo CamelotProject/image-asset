@@ -21,8 +21,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
  */
 final class BatchResultTableTest extends TestCase
 {
-    /** @var BufferedOutput */
-    private $bufferedOutput;
+    private BufferedOutput $bufferedOutput;
 
     protected function setUp(): void
     {

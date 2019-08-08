@@ -12,12 +12,9 @@ use const DIRECTORY_SEPARATOR;
 
 final class Filesystem implements FilesystemInterface
 {
-    /** @var string */
-    private $mountPath;
-    /** @var FinderInterface */
-    private $finder;
-    /** @var SymfonyFilesystem */
-    private $decorated;
+    private string $mountPath;
+    private FinderInterface $finder;
+    private SymfonyFilesystem $decorated;
 
     public function __construct(string $mountPath, SymfonyFilesystem $decorated = null)
     {

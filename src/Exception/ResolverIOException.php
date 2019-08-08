@@ -13,7 +13,7 @@ use const PHP_EOL;
 class ResolverIOException extends IOException
 {
     /** @var IOException[] */
-    private $exceptions;
+    private array $exceptions;
 
     public function __construct(string $operation, array $exceptions, ?string $path = null, int $code = 0, ?Throwable $previous = null)
     {

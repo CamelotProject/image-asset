@@ -15,10 +15,8 @@ use PHPUnit\Framework\TestCase;
  */
 final class FallbackTest extends TestCase
 {
-    /** @var Filesystem */
-    protected $filesystem;
-    /** @var Dimensions */
-    protected $dimensions;
+    protected Filesystem $filesystem;
+    protected Dimensions $dimensions;
 
     protected function setUp(): void
     {

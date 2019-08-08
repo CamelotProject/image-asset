@@ -12,8 +12,7 @@ use Symfony\Component\HttpFoundation\Response as HttpFoundationResponse;
  */
 final class Response extends HttpFoundationResponse
 {
-    /** @var ThumbnailInterface */
-    private $thumbnail;
+    private ThumbnailInterface $thumbnail;
 
     /**
      * Constructor.

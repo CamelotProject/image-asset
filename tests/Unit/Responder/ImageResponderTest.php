@@ -29,13 +29,10 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 final class ImageResponderTest extends TestCase
 {
     /** @var ThumbnailInterface|MockObject */
-    /** @var ThumbnailInterface */
-    protected $thumbnail;
-    /** @var ImageInterface */
-    protected $image;
+    protected ThumbnailInterface $thumbnail;
+    protected ImageInterface $image;
     /** @var ProcessorInterface|MockObject */
-    /** @var ProcessorInterface */
-    private $processor;
+    private ProcessorInterface $processor;
 
     protected function setUp(): void
     {

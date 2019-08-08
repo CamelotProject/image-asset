@@ -15,10 +15,8 @@ use PHPUnit\Framework\TestCase;
  */
 final class ThumbnailTest extends TestCase
 {
-    /** @var string */
-    private $data = '';
-    /** @var ImageInterface */
-    private $image;
+    private string $data = '';
+    private ImageInterface $image;
 
     protected function setUp(): void
     {

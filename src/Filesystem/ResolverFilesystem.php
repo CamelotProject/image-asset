@@ -14,7 +14,7 @@ use Webmozart\Assert\Assert;
 final class ResolverFilesystem implements ResolverFilesystemInterface
 {
     /** @var FilesystemInterface[] */
-    private $filesystems;
+    private array $filesystems;
 
     public function __construct(iterable $filesystems)
     {

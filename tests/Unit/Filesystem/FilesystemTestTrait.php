@@ -29,11 +29,9 @@ use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;
  */
 trait FilesystemTestTrait
 {
-    /** @var string */
-    protected $tmpDir;
+    protected string $tmpDir;
     /** @var MockObject|SymfonyFilesystem */
-    /** @var SymfonyFilesystem */
-    protected $decorated;
+    protected SymfonyFilesystem $decorated;
 
     protected function setUp(): void
     {

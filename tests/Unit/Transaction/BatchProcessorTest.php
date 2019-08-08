@@ -23,10 +23,8 @@ use function is_array;
 final class BatchProcessorTest extends TestCase
 {
     /** @var ProcessorInterface|MockObject */
-    /** @var ProcessorInterface */
-    private $processor;
-    /** @var FilesystemInterface */
-    private $filesystem;
+    private ProcessorInterface $processor;
+    private FilesystemInterface $filesystem;
 
     protected function setUp(): void
     {

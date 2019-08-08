@@ -16,8 +16,7 @@ use Twig\TwigFunction;
  */
 final class ImageAssetExtensionTest extends TestCase
 {
-    /** @var ThumbnailPathMatcherInterface */
-    private $pathMatcher;
+    private ThumbnailPathMatcherInterface $pathMatcher;
 
     protected function setUp(): void
     {

@@ -15,12 +15,9 @@ use Camelot\ImageAsset\Image\Svg;
  */
 final class Thumbnail implements ThumbnailInterface
 {
-    /** @var ImageInterface */
-    private $image;
-    /** @var string */
-    private $thumbnail;
-    /** @var ?Dimensions */
-    private $dimensions = null;
+    private ImageInterface $image;
+    private string $thumbnail;
+    private ?Dimensions $dimensions = null;
 
     public function __construct(ImageInterface $image, string $thumbnail)
     {

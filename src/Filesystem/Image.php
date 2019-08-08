@@ -12,8 +12,7 @@ class Image implements ImageInterface
     use SizeTrait;
     use FileTrait;
 
-    /** @var ?Info */
-    private $info = null;
+    private ?Info $info = null;
 
     /**
      * {@inheritdoc}

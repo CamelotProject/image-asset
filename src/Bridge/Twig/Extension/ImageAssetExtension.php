@@ -11,8 +11,7 @@ use Twig\TwigFunction;
 
 final class ImageAssetExtension extends AbstractExtension
 {
-    /** @var ThumbnailPathMatcherInterface */
-    private $pathMatcher;
+    private ThumbnailPathMatcherInterface $pathMatcher;
 
     public function __construct(ThumbnailPathMatcherInterface $pathMatcher)
     {

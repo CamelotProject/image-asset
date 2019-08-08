@@ -9,8 +9,7 @@ use const DIRECTORY_SEPARATOR;
 
 final class NameGenerator
 {
-    /** @var string */
-    private $pattern;
+    private string $pattern;
 
     public function __construct(string $pattern)
     {

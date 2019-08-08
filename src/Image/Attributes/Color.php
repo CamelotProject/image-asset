@@ -11,16 +11,11 @@ use Camelot\ImageAsset\Exception\InvalidArgumentException;
  */
 final class Color
 {
-    /** @var ?int */
-    private $index;
-    /** @var int */
-    private $red;
-    /** @var int */
-    private $green;
-    /** @var int */
-    private $blue;
-    /** @var ?int */
-    private $alpha;
+    private ?int $index;
+    private int $red;
+    private int $green;
+    private int $blue;
+    private ?int $alpha;
 
     /**
      * @param int      $red   Value of red component (between 0 and 255)

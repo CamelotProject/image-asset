@@ -6,8 +6,7 @@ namespace Camelot\ImageAsset\Util;
 
 final class Uuid
 {
-    /** @var string */
-    private $uuid;
+    private string $uuid;
 
     private function __construct()
     {

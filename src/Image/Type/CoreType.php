@@ -11,10 +11,8 @@ use function defined;
  */
 class CoreType implements TypeInterface
 {
-    /** @var int */
-    private $id;
-    /** @var string */
-    private $name;
+    private int $id;
+    private string $name;
 
     /**
      * @noinspection PhpMissingParentConstructorInspection
@@ -110,7 +108,7 @@ class CoreType implements TypeInterface
             }
         }
         // flip these and map them to a humanized string
-        $types = array_map(function (string $type) { return str_replace(['IMAGETYPE_', '_'], ['', ' '], $type); }, array_flip($types));
+        $types = array_map(fn (string $type) => str_replace(['IMAGETYPE_', '_'], ['', ' '], $type), array_flip($types));
         ksort($types);
 
         return $types;
