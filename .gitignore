@@ -1,6 +1,7 @@
 /vendor/
+/var/
 composer.lock
-.DS_*
-.idea
+phpunit.stdout
+phpunit.stderr
 tests/tmp
 tests/report
