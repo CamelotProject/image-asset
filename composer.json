@@ -19,9 +19,16 @@
     ],
     "require": {
         "php": "^7.1",
+        "ext-fileinfo": "*",
         "ext-gd": "*",
+        "ext-json": "*",
+        "camelot/thrower": "^1.0",
         "contao/imagine-svg": "^0.1",
-        "doctrine/cache": "^1.8"
+        "miljar/php-exif": "^0.6.5",
+        "symfony/filesystem": "^4.3 || ^5.0",
+        "symfony/finder": "^4.3 || ^5.0",
+        "symfony/mime": "^4.3 || ^5.0",
+        "webmozart/path-util": "^2.3"
     },
     "require-dev": {
         "camelot/coding-style": "^2.0",
@@ -51,6 +58,6 @@
     },
     "scripts": {
         "lint": "vendor/bin/php-cs-fixer fix --show-progress=dots -v",
-        "test": "vendor/bin/phpunit"
+        "test": "vendor/bin/vendor/bin/simple-phpunit tests/"
     }
 }

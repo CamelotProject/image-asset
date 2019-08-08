@@ -2,51 +2,41 @@
 
 declare(strict_types=1);
 
-namespace Camelot\ImageAssets\Image;
+namespace Camelot\ImageAsset\Image\Attributes;
 
-use InvalidArgumentException;
+use Camelot\ImageAsset\Exception\InvalidArgumentException;
 
 /**
  * An object representation of a color.
- *
- * @author Carson Full <carsonfull@gmail.com>
  */
-class Color
+final class Color
 {
-    /** @var int|null */
-    protected $index;
+    /** @var ?int */
+    private $index;
     /** @var int */
-    protected $red;
+    private $red;
     /** @var int */
-    protected $green;
+    private $green;
     /** @var int */
-    protected $blue;
-    /** @var int|null */
-    protected $alpha;
+    private $blue;
+    /** @var ?int */
+    private $alpha;
 
     /**
-     * Color constructor.
-     *
      * @param int      $red   Value of red component (between 0 and 255)
      * @param int      $green Value of green component (between 0 and 255)
      * @param int      $blue  Value of blue component (between 0 and 255)
      * @param int|null $alpha Optional value of alpha component (between 0 and 127). 0 = opaque, 127 = transparent.
      * @param int|null $index Index of the color for the image resource
      */
-    public function __construct($red, $green, $blue, $alpha = null, $index = null)
+    public function __construct(int $red, int $green, int $blue, ?int $alpha = null, ?int $index = null)
     {
         foreach ([$red, $green, $blue] as $component) {
-            if (!is_numeric($component)) {
-                throw new InvalidArgumentException('Color components are expected to be numeric');
-            }
             if ($component < 0 || $component > 255) {
                 throw new InvalidArgumentException('Color components are expected to be between 0 and 255');
             }
         }
         if ($alpha !== null) {
-            if (!is_numeric($alpha)) {
-                throw new InvalidArgumentException('Color alpha component is expected to be numeric');
-            }
             if ($alpha < 0 || $alpha > 127) {
                 throw new InvalidArgumentException('Color alpha component is expected to be between 0 and 127');
             }
@@ -61,60 +51,41 @@ class Color
 
     /**
      * Shortcut to create a transparent color.
-     *
-     * @return Color
      */
-    public static function transparent()
+    public static function transparent(): self
     {
         return new static(0, 0, 0, 127);
     }
 
     /**
      * Shortcut to create a white color.
-     *
-     * @return Color
      */
-    public static function white()
+    public static function white(): self
     {
         return new static(255, 255, 255);
     }
 
-    /**
-     * @return int
-     */
-    public function getRed()
+    public function getRed(): int
     {
         return $this->red;
     }
 
-    /**
-     * @return int
-     */
-    public function getGreen()
+    public function getGreen(): int
     {
         return $this->green;
     }
 
-    /**
-     * @return int
-     */
-    public function getBlue()
+    public function getBlue(): int
     {
         return $this->blue;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getAlpha()
+    public function getAlpha(): ?int
     {
         return $this->alpha;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getIndex()
+    public function getIndex(): ?int
     {
         return $this->index;
     }

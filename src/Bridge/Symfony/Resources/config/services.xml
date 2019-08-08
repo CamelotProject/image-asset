@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        https://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <defaults autowire="true"
+                  autoconfigure="true"
+                  public="false"
+        />
+
+        <!-- Command -->
+        <service id="Camelot\ImageAsset\Command\GenerateThumbCommand">
+            <argument key="$thumbnailFilesystem" type="service" id="camelot.image_asset.filesystem.thumbs" />
+            <argument key="$projectDir">%kernel.project_dir%</argument>
+            <tag name="console.command" command="camelot:image:generate-thumb"/>
+        </service>
+
+        <service id="Camelot\ImageAsset\Command\GenerateThumbsCommand">
+            <argument key="$thumbnailFilesystem" type="service" id="camelot.image_asset.filesystem.thumbs" />
+            <argument key="$projectDir">%kernel.project_dir%</argument>
+            <tag name="console.command" command="camelot:image:generate-thumbs"/>
+        </service>
+
+        <service id="Camelot\ImageAsset\Controller\ImageController">
+            <tag name="controller.service_arguments" />
+        </service>
+
+        <service id="Camelot\ImageAsset\Controller\ImageAliasController">
+            <tag name="controller.service_arguments" />
+        </service>
+
+        <!-- Filesystem -->
+        <service id="camelot.image_asset.filesystem.bundle" class="Camelot\ImageAsset\Filesystem\Filesystem">
+            <tag name="camelot.image_asset.filesystem" />
+            <tag name="camelot.image_asset.filesystem.image" priority="-5" />
+        </service>
+
+        <service id="camelot.image_asset.filesystem.public" class="Camelot\ImageAsset\Filesystem\Filesystem" >
+            <tag name="camelot.image_asset.filesystem" />
+            <tag name="camelot.image_asset.filesystem.image"  priority="-10" />
+        </service>
+
+        <service id="camelot.image_asset.filesystem.thumbs" class="Camelot\ImageAsset\Filesystem\Filesystem" >
+            <tag name="camelot.image_asset.filesystem" />
+        </service>
+
+        <service id="Camelot\ImageAsset\Filesystem\ResolverFilesystem" >
+            <argument key="$filesystems" type="tagged" tag="camelot.image_asset.filesystem.image" />
+        </service>
+        <service id="Camelot\ImageAsset\Filesystem\FilesystemInterface" alias="Camelot\ImageAsset\Filesystem\ResolverFilesystem"  />
+
+        <!-- Image fallbacks -->
+        <service id="camelot.image_asset.default_image_size" class="Camelot\ImageAsset\Image\Dimensions" />
+
+        <service id="camelot.image_asset.default_image_background" class="Camelot\ImageAsset\Image\Attributes\Color">
+            <factory class="Camelot\ImageAsset\Image\Attributes\Color" method="white" />
+        </service>
+
+        <service id="Camelot\ImageAsset\Image\Attributes\Aliases">
+            <argument type="tagged" tag="camelot.thumbnails.alias" />
+        </service>
+
+        <!-- Responder -->
+        <service id="Camelot\ImageAsset\Responder\ImageResponderInterface" alias="Camelot\ImageAsset\Responder\ImageResponder"  />
+        <service id="Camelot\ImageAsset\Responder\ImageResponder">
+            <argument key="$cacheTime" />
+            <argument key="$debug">%kernel.debug%</argument>
+        </service>
+
+        <service id="Camelot\ImageAsset\Image\FallbackInterface" alias="Camelot\ImageAsset\Image\Fallback" />
+        <service id="Camelot\ImageAsset\Image\Fallback">
+            <argument key="$filesystem" type="service" id="Camelot\ImageAsset\Filesystem\FilesystemInterface" />
+            <argument key="$defaultDimensions" type="service" id="camelot.image_asset.default_image_size" />
+            <argument key="$defaultImagePath" />
+            <argument key="$errorImagePath" />
+        </service>
+
+        <!-- Routing -->
+        <service id="Camelot\ImageAsset\Routing\ImageAssetLoader" >
+            <tag name="routing.loader" />
+        </service>
+
+        <service id="Camelot\ImageAsset\Routing\ThumbnailPathMatcher" />
+        <service id="Camelot\ImageAsset\Routing\ThumbnailPathMatcherInterface" alias="Camelot\ImageAsset\Routing\ThumbnailPathMatcher" />
+
+        <!-- Twig -->
+        <service id="Camelot\ImageAsset\Bridge\Twig\Extension\ImageAssetExtension" >
+            <tag name="twig.extension" />
+        </service>
+
+        <!-- Thumbnail -->
+        <service id="Camelot\ImageAsset\Thumbnail\Resizer" >
+            <argument type="service" id="Contao\ImagineSvg\Imagine" />
+            <argument key="$background" type="service" id="camelot.image_asset.default_image_background" />
+        </service>
+
+        <service id="Camelot\ImageAsset\Thumbnail\Rescaler" >
+            <argument key="$limitUpscaling">true</argument>
+        </service>
+
+        <service id="Camelot\ImageAsset\Thumbnail\Creator" >
+            <argument type="service" id="Camelot\ImageAsset\Thumbnail\Rescaler" />
+            <argument type="service" id="Camelot\ImageAsset\Thumbnail\Resizer" />
+        </service>
+
+        <service id="Camelot\ImageAsset\Thumbnail\CreatorInterface" alias="Camelot\ImageAsset\Thumbnail\Creator" />
+
+        <service id="Camelot\ImageAsset\Thumbnail\NameGenerator" />
+
+        <service id="Camelot\ImageAsset\Thumbnail\Manifest" />
+
+        <service id="Camelot\ImageAsset\Thumbnail\ManifestInterface" alias="Camelot\ImageAsset\Thumbnail\Manifest" />
+
+        <!-- Transaction -->
+        <service id="Camelot\ImageAsset\Transaction\TransactionBuilder" />
+
+        <service id="Camelot\ImageAsset\Transaction\Processor" >
+            <argument key="$targetFilesystem" type="service" id="camelot.image_asset.filesystem.thumbs" />
+        </service>
+        <service id="Camelot\ImageAsset\Transaction\ProcessorInterface" alias="Camelot\ImageAsset\Transaction\Processor"  />
+
+        <service id="Camelot\ImageAsset\Transaction\BatchProcessor" />
+
+        <!-- External -->
+        <service id="Contao\ImagineSvg\Imagine" />
+    </services>
+</container>

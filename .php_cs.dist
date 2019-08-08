@@ -9,7 +9,9 @@ return Camelot\CsFixer\Config::create()
             ->php71()
     )
     ->addRules([
+        '@PhpCsFixer:risky' => true,
         '@PHPUnit60Migration:risky' => true,
+        '@PHPUnit75Migration:risky' => true,
         'declare_strict_types' => true,
         'native_function_invocation' => [
             'include' => ['@compiler_optimized'],
@@ -17,6 +19,7 @@ return Camelot\CsFixer\Config::create()
         'no_superfluous_phpdoc_tags' => true,
         'ordered_class_elements' => true,
         'php_unit_strict' => false,
+        'comment_to_phpdoc' => false,
     ])
     ->in('src')
     ->in('tests')
