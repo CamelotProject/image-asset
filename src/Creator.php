@@ -1,7 +1,13 @@
 <?php
-namespace Bolt\Thumbs;
 
-use Bolt\Filesystem\Exception\IOException;
+declare(strict_types=1);
+
+namespace Camelot\ImageAssets;
+
+use Camelot\ImageAssets\Image\Action;
+use Camelot\ImageAssets\Image\Color;
+use Camelot\ImageAssets\Image\ImageResource;
+use Camelot\ImageAssets\Image\Point;
 use Contao\ImagineSvg\Imagine as SvgImagine;
 use Exception;
 use Imagine\Exception\RuntimeException as ImagineRuntimeException;
@@ -57,11 +63,10 @@ class Creator implements CreatorInterface
      * Verifies that the image's info can be read correctly.
      * If the src image fails, it tries the error image as the fallback.
      *
-     * @param Transaction $transaction
      *
-     * @throws RuntimeException If both src and error images fail to be read.
+     * @throws RuntimeException if both src and error images fail to be read
      */
-    protected function verifyInfo(Transaction $transaction)
+    protected function verifyInfo(Transaction $transaction): void
     {
         if ($transaction->getSrcImage()->getInfo()->isValid()) {
             return;
@@ -79,10 +84,8 @@ class Creator implements CreatorInterface
 
     /**
      * If target width and/or height are set to 0, they are set based on the image's height/width.
-     *
-     * @param Transaction $transaction
      */
-    protected function autoscale(Transaction $transaction)
+    protected function autoscale(Transaction $transaction): void
     {
         $info = $transaction->getSrcImage()->getInfo();
 
@@ -100,10 +103,8 @@ class Creator implements CreatorInterface
 
     /**
      * Limits the target width/height to the image's height/width if upscale is not allowed.
-     *
-     * @param Transaction $transaction
      */
-    protected function checkForUpscale(Transaction $transaction)
+    protected function checkForUpscale(Transaction $transaction): void
     {
         if (!$this->limitUpscaling) {
             return;
@@ -123,7 +124,6 @@ class Creator implements CreatorInterface
     /**
      * Do the actual resize/crop/fit/border logic and return the image data.
      *
-     * @param Transaction $transaction
      *
      * @return string
      */
@@ -212,7 +212,6 @@ class Creator implements CreatorInterface
     /**
      * Resize SVG image.
      *
-     * @param Transaction $transaction
      *
      * @return string
      */

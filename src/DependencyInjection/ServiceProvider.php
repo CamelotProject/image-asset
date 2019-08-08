@@ -1,7 +1,11 @@
 <?php
 
-namespace Bolt\Thumbs;
+declare(strict_types=1);
 
+namespace Camelot\ImageAssets;
+
+use Camelot\ImageAssets\Controller\Controller;
+use Camelot\ImageAssets\Thumbnail\Responder;
 use Contao\ImagineSvg\Imagine as SvgImagine;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
@@ -16,7 +20,7 @@ class ServiceProvider implements ServiceProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function register(Container $app)
+    public function register(Container $app): void
     {
         $app['controller.thumbnails.mount_prefix'] = '/thumbs';
         $app['controller.thumbnails'] = function () {

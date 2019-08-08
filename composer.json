@@ -1,6 +1,7 @@
 {
-    "name": "bolt/thumbs",
-    "description": "Small package based on GD to handle thumbnail resizes",
+    "name": "camelot/image-asset",
+    "type": "symfony-bundle",
+    "description": "Image management library & bundle based on GD to handle image thumbnails",
     "license": "MIT",
     "authors": [
         {
@@ -10,33 +11,42 @@
         {
             "name": "Carson Full",
             "email": "carsonfull@gmail.com"
+        },
+        {
+            "name": "Gawain Lynch",
+            "email": "gawain.lynch@gmail.com"
         }
     ],
     "require": {
-        "bolt/filesystem": "^2.3",
-        "contao/imagine-svg": "~0.1.2",
-        "doctrine/cache": "^1.4",
+        "php": "^7.1",
         "ext-gd": "*",
-        "php": "^5.5.9 || ^7.0"
+        "contao/imagine-svg": "^0.1",
+        "doctrine/cache": "^1.8"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4.8",
-        "silex/silex": "^2.0",
-        "symfony/browser-kit": "^2.7"
+        "camelot/coding-style": "^2.0",
+        "phpunit/phpunit": "^8.3",
+        "friendsofphp/php-cs-fixer": "^2.15",
+        "psalm/plugin-phpunit": "^0.7",
+        "symfony/browser-kit": "^4.3",
+        "symfony/framework-bundle": "^4.3",
+        "symfony/dotenv": "^4.3",
+        "symfony/debug-bundle": "^4.3",
+        "symfony/yaml": "^4.3",
+        "vimeo/psalm": "^3.4"
     },
     "autoload": {
         "psr-4": {
-            "Bolt\\Thumbs\\": "src"
+            "Camelot\\ImageAsset\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Bolt\\Thumbs\\Tests\\": "tests"
+            "Camelot\\ImageAsset\\Tests\\": "tests"
         }
     },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "4.0-dev"
-        }
+    "scripts": {
+        "lint": "vendor/bin/php-cs-fixer fix --show-progress=dots -v",
+        "test": "vendor/bin/phpunit"
     }
 }

@@ -1,8 +1,15 @@
 <?php
 
-namespace Bolt\Thumbs;
+declare(strict_types=1);
 
-use Bolt\Filesystem;
+namespace Camelot\ImageAssets\Response;
+
+use Camelot\Filesystem;
+use Camelot\ImageAssets\CreatorInterface;
+use Camelot\ImageAssets\FinderInterface;
+use Camelot\ImageAssets\Image\Thumbnail;
+use Camelot\ImageAssets\ResponderInterface;
+use Camelot\ImageAssets\Transaction;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Cache\VoidCache;
 use Exception;
@@ -32,12 +39,8 @@ class Responder implements ResponderInterface
     /**
      * Responder constructor.
      *
-     * @param CreatorInterface                    $creator
-     * @param FinderInterface                     $finder
-     * @param Filesystem\Handler\Image            $errorImage
-     * @param Filesystem\FilesystemInterface|null $webFs
-     * @param Cache                               $cache
-     * @param int                                 $cacheTime
+     * @param Cache $cache
+     * @param int   $cacheTime
      */
     public function __construct(
         CreatorInterface $creator,
@@ -81,7 +84,6 @@ class Responder implements ResponderInterface
      *
      * Handles the cache layer around the creation as well.
      *
-     * @param Transaction $transaction
      *
      * @return string
      */
@@ -105,7 +107,7 @@ class Responder implements ResponderInterface
      * @param string $requestPath
      * @param string $imageContent
      */
-    protected function saveStaticThumbnail($requestPath, $imageContent)
+    protected function saveStaticThumbnail($requestPath, $imageContent): void
     {
         if ($this->webFs === null || $requestPath === null) {
             return;

@@ -1,9 +1,11 @@
 <?php
 
-namespace Bolt\Thumbs;
+declare(strict_types=1);
 
-use Bolt\Filesystem\AggregateFilesystemInterface;
-use Bolt\Filesystem\Handler\Image;
+namespace Camelot\ImageAssets;
+
+use Camelot\Filesystem\AggregateFilesystemInterface;
+use Camelot\Filesystem\Handler\Image;
 
 class Finder implements FinderInterface
 {
@@ -17,9 +19,7 @@ class Finder implements FinderInterface
     /**
      * Finder constructor.
      *
-     * @param AggregateFilesystemInterface $filesystem
-     * @param string[]                     $filesystemsToCheck
-     * @param Image                        $defaultImage
+     * @param string[] $filesystemsToCheck
      */
     public function __construct(
         AggregateFilesystemInterface $filesystem,

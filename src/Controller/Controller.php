@@ -1,8 +1,13 @@
 <?php
 
-namespace Bolt\Thumbs;
+declare(strict_types=1);
 
-use Bolt\Filesystem\Handler\Image\Dimensions;
+namespace Camelot\ImageAssets\Controller;
+
+use Camelot\Filesystem\Handler\Image\Dimensions;
+use Camelot\ImageAssets\Image\Action;
+use Camelot\ImageAssets\Response\Response;
+use Camelot\ImageAssets\Transaction;
 use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
 use Silex\ControllerCollection;
@@ -26,7 +31,7 @@ class Controller implements ControllerProviderInterface
 
         // Specific resolutions
         $toInt = function ($value) {
-            return intval($value);
+            return (int) $value;
         };
         $toAction = function ($value) {
             $actions = [
@@ -36,7 +41,7 @@ class Controller implements ControllerProviderInterface
                 'f' => Action::FIT,
             ];
 
-            return isset($actions[$value]) ? $actions[$value] : Action::CROP;
+            return $actions[$value] ?? Action::CROP;
         };
         $ctr->get('/{width}x{height}{action}/{file}', 'controller.thumbnails:thumbnail')
             ->assert('width', '\d+')
@@ -62,12 +67,10 @@ class Controller implements ControllerProviderInterface
     /**
      * Returns a thumbnail response.
      *
-     * @param Application $app
-     * @param Request     $request
-     * @param string      $file
-     * @param string      $action
-     * @param int         $width
-     * @param int         $height
+     * @param string $file
+     * @param string $action
+     * @param int    $width
+     * @param int    $height
      *
      * @return Response
      */
@@ -84,38 +87,34 @@ class Controller implements ControllerProviderInterface
     /**
      * Returns a thumbnail response.
      *
-     * @param Application $app
-     * @param Request     $request
-     * @param string      $file
-     * @param string      $alias
+     * @param string $file
+     * @param string $alias
      *
      * @return Response
      */
     public function alias(Application $app, Request $request, $file, $alias)
     {
-        $config = isset($app['thumbnails.aliases'][$alias]) ? $app['thumbnails.aliases'][$alias] : false;
+        $config = $app['thumbnails.aliases'][$alias] ?? false;
 
         // Set to default 404 image if alias does not exist
         if (!$config) {
             return $this->defaultResponse($app, $request);
         }
 
-        $width = isset($config['size'][0]) ? $config['size'][0] : 0;
-        $height = isset($config['size'][1]) ? $config['size'][1] : 0;
-        $action = isset($config['cropping']) ? $config['cropping'] : Action::CROP;
+        $width = $config['size'][0] ?? 0;
+        $height = $config['size'][1] ?? 0;
+        $action = $config['cropping'] ?? Action::CROP;
 
         return $this->serve($app, $request, $file, $action, $width, $height);
     }
 
     /**
-     * Serve a request for a thumbnail
+     * Serve a request for a thumbnail.
      *
-     * @param Application $app
-     * @param Request     $request
-     * @param string      $file
-     * @param string      $action
-     * @param int         $width
-     * @param int         $height
+     * @param string $file
+     * @param string $action
+     * @param int    $width
+     * @param int    $height
      *
      * @return Response
      */
@@ -137,12 +136,10 @@ class Controller implements ControllerProviderInterface
     }
 
     /**
-     * Check if thumbnail request for specific resolution is allowed
+     * Check if thumbnail request for specific resolution is allowed.
      *
-     * @param Application $app
-     * @param Request     $request
      *
-     * @return boolean
+     * @return bool
      */
     protected function isRestricted(Application $app, Request $request)
     {
@@ -153,14 +150,12 @@ class Controller implements ControllerProviderInterface
             return false;
         }
 
-        return isset($app['thumbnails.only_aliases']) ? $app['thumbnails.only_aliases'] : false;
+        return $app['thumbnails.only_aliases'] ?? false;
     }
 
     /**
-     * Get the default error image on restriction errors or undefined aliases
+     * Get the default error image on restriction errors or undefined aliases.
      *
-     * @param Application $app
-     * @param Request     $request
      *
      * @return Response
      */

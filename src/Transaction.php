@@ -1,9 +1,12 @@
 <?php
 
-namespace Bolt\Thumbs;
+declare(strict_types=1);
 
-use Bolt\Filesystem\Handler\Image;
-use Bolt\Filesystem\Handler\Image\Dimensions;
+namespace Camelot\ImageAssets;
+
+use Camelot\Filesystem\Handler\Image;
+use Camelot\Filesystem\Handler\Image\Dimensions;
+use Camelot\ImageAssets\Image\Action;
 
 /**
  * A storage entity for a thumbnail creation request.
@@ -56,7 +59,7 @@ class Transaction
     {
         $path = str_replace('/', '_', $this->getFilePath());
 
-        return join('-', [$path, $this->action, $this->target->getWidth(), $this->target->getHeight()]);
+        return implode('-', [$path, $this->action, $this->target->getWidth(), $this->target->getHeight()]);
     }
 
     /**
@@ -92,8 +95,6 @@ class Transaction
     }
 
     /**
-     * @param Image $srcImage
-     *
      * @return Transaction
      */
     public function setSrcImage(Image $srcImage)
@@ -112,8 +113,6 @@ class Transaction
     }
 
     /**
-     * @param Image $errorImage
-     *
      * @return Transaction
      */
     public function setErrorImage(Image $errorImage)
@@ -152,8 +151,6 @@ class Transaction
     }
 
     /**
-     * @param Dimensions $target
-     *
      * @return Transaction
      */
     public function setTarget(Dimensions $target)

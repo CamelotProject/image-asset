@@ -1,6 +1,10 @@
 <?php
 
-namespace Bolt\Thumbs;
+declare(strict_types=1);
+
+namespace Camelot\ImageAssets\Response;
+
+use Camelot\ImageAssets\Image\Thumbnail;
 
 /**
  * A Thumbnail Response.
@@ -71,11 +75,10 @@ class Response extends \Symfony\Component\HttpFoundation\Response
     }
 
     /**
-     * @param Thumbnail $thumbnail
-     * @param bool      $autoEtag
-     * @param bool      $autoLastModified
+     * @param bool $autoEtag
+     * @param bool $autoLastModified
      */
-    public function setThumbnail(Thumbnail $thumbnail, $autoEtag = false, $autoLastModified = true)
+    public function setThumbnail(Thumbnail $thumbnail, $autoEtag = false, $autoLastModified = true): void
     {
         $this->thumbnail = $thumbnail;
         $this->setContent($thumbnail);

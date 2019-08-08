@@ -1,15 +1,20 @@
 <?php
-namespace Bolt\Thumbs\Tests;
 
-use Bolt\Filesystem\Adapter\Local;
-use Bolt\Filesystem\Filesystem;
-use Bolt\Filesystem\Handler\Image;
-use Bolt\Filesystem\Handler\Image\Dimensions;
-use Bolt\Thumbs\Action;
-use Bolt\Thumbs\Creator;
-use Bolt\Thumbs\Transaction;
+declare(strict_types=1);
 
-class CreatorTest extends \PHPUnit_Framework_TestCase
+namespace Camelot\ImageAssets\Tests;
+
+use Camelot\Filesystem\Adapter\Local;
+use Camelot\Filesystem\Filesystem;
+use Camelot\Filesystem\Handler\Image;
+use Camelot\Filesystem\Handler\Image\Dimensions;
+use Camelot\ImageAssets\Creator;
+use Camelot\ImageAssets\Image\Action;
+use Camelot\ImageAssets\Transaction;
+use PHPUnit\Framework\TestCase;
+use function is_string;
+
+class CreatorTest extends TestCase
 {
     /** @var Filesystem */
     protected $fs;
@@ -23,7 +28,7 @@ class CreatorTest extends \PHPUnit_Framework_TestCase
     /** @var Image */
     protected $svgImage;
 
-    public function setup()
+    public function setup(): void
     {
         $this->fs = new Filesystem(new Local(__DIR__ . '/images'));
         $this->logoJpg = $this->fs->getImage('generic-logo.jpg');
@@ -35,7 +40,7 @@ class CreatorTest extends \PHPUnit_Framework_TestCase
     /**
      * @testdox When target dimensions are (0, 0), thumbnail dimensions are set to image dimensions
      */
-    public function testFallbacksForAutoscale()
+    public function testFallbacksForAutoscale(): void
     {
         $transaction = new Transaction($this->portraitImage);
 
@@ -47,7 +52,7 @@ class CreatorTest extends \PHPUnit_Framework_TestCase
     /**
      * @testdox When target width is 0, thumbnail width is autoscaled based on image ratio
      */
-    public function testFallbacksForHorizontalAutoscale()
+    public function testFallbacksForHorizontalAutoscale(): void
     {
         $transaction = new Transaction($this->portraitImage, Action::CROP, new Dimensions(0, 320));
 
@@ -59,7 +64,7 @@ class CreatorTest extends \PHPUnit_Framework_TestCase
     /**
      * @testdox When target height is 0, thumbnail height is autoscaled based on image ratio
      */
-    public function testFallbacksForVerticalAutoscale()
+    public function testFallbacksForVerticalAutoscale(): void
     {
         $transaction = new Transaction($this->landscapeImage, Action::CROP, new Dimensions(500, 0));
 
@@ -71,7 +76,7 @@ class CreatorTest extends \PHPUnit_Framework_TestCase
     /**
      * @testdox When upscaling is allowed, thumbnail is enlarged to target dimensions
      */
-    public function testAllowUpscaling()
+    public function testAllowUpscaling(): void
     {
         $upscaled = new Dimensions(800, 600);
         $transaction = new Transaction($this->logoJpg, Action::CROP, $upscaled);
@@ -84,7 +89,7 @@ class CreatorTest extends \PHPUnit_Framework_TestCase
     /**
      * @testdox When upscaling is not allowed, target dimensions are reduced to current image dimensions
      */
-    public function testLimitUpscaling()
+    public function testLimitUpscaling(): void
     {
         $upscaled = new Dimensions(800, 600);
         $original = new Dimensions(624, 351);
@@ -96,7 +101,7 @@ class CreatorTest extends \PHPUnit_Framework_TestCase
         $this->assertDimensions($original, $result);
     }
 
-    public function testLandscapeCrop()
+    public function testLandscapeCrop(): void
     {
         $expected = new Dimensions(500, 200);
         $transaction = new Transaction($this->landscapeImage, Action::CROP, $expected);
@@ -106,7 +111,7 @@ class CreatorTest extends \PHPUnit_Framework_TestCase
         $this->assertDimensions($expected, $result);
     }
 
-    public function testLandscapeResize()
+    public function testLandscapeResize(): void
     {
         $transaction = new Transaction($this->landscapeImage, Action::RESIZE, new Dimensions(500, 200));
 
@@ -115,7 +120,7 @@ class CreatorTest extends \PHPUnit_Framework_TestCase
         $this->assertDimensions(new Dimensions(299, 200), $result);
     }
 
-    public function testLandscapeFit()
+    public function testLandscapeFit(): void
     {
         $expected = new Dimensions(500, 200);
         $transaction = new Transaction($this->landscapeImage, Action::FIT, $expected);
@@ -125,7 +130,7 @@ class CreatorTest extends \PHPUnit_Framework_TestCase
         $this->assertDimensions($expected, $result);
     }
 
-    public function testLandscapeBorder()
+    public function testLandscapeBorder(): void
     {
         $expected = new Dimensions(500, 200);
         $transaction = new Transaction($this->landscapeImage, Action::BORDER, $expected);
@@ -135,7 +140,7 @@ class CreatorTest extends \PHPUnit_Framework_TestCase
         $this->assertDimensions($expected, $result);
     }
 
-    public function testPortraitCrop()
+    public function testPortraitCrop(): void
     {
         $expected = new Dimensions(200, 500);
         $transaction = new Transaction($this->portraitImage, Action::CROP, $expected);
@@ -145,7 +150,7 @@ class CreatorTest extends \PHPUnit_Framework_TestCase
         $this->assertDimensions($expected, $result);
     }
 
-    public function testPortraitResize()
+    public function testPortraitResize(): void
     {
         $transaction = new Transaction($this->portraitImage, Action::RESIZE, new Dimensions(200, 500));
 
@@ -154,7 +159,7 @@ class CreatorTest extends \PHPUnit_Framework_TestCase
         $this->assertDimensions(new Dimensions(200, 299), $result);
     }
 
-    public function testPortraitFit()
+    public function testPortraitFit(): void
     {
         $expected = new Dimensions(200, 500);
         $transaction = new Transaction($this->portraitImage, Action::FIT, $expected);
@@ -164,7 +169,7 @@ class CreatorTest extends \PHPUnit_Framework_TestCase
         $this->assertDimensions($expected, $result);
     }
 
-    public function testPortraitBorder()
+    public function testPortraitBorder(): void
     {
         $expected = new Dimensions(200, 500);
         $transaction = new Transaction($this->portraitImage, Action::BORDER, $expected);
@@ -174,7 +179,7 @@ class CreatorTest extends \PHPUnit_Framework_TestCase
         $this->assertDimensions($expected, $result);
     }
 
-    public function testSvg()
+    public function testSvg(): void
     {
         $transaction = new Transaction($this->portraitImage, Action::RESIZE, new Dimensions(200, 500));
 
@@ -184,10 +189,9 @@ class CreatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param Dimensions        $expected
      * @param Dimensions|string $actual
      */
-    protected function assertDimensions(Dimensions $expected, $actual)
+    protected function assertDimensions(Dimensions $expected, $actual): void
     {
         if (is_string($actual)) {
             $info = Image\Info::createFromString($actual);
