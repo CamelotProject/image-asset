@@ -64,7 +64,7 @@ final class Filesystem implements FilesystemInterface
         $file = $this->resolve($origin);
 
         try {
-            $this->decorated->rename((string) $file, $this->resolve($target), $overwrite);
+            $this->decorated->rename((string) $file, (string) $this->resolve($target), $overwrite);
         } catch (\Symfony\Component\Filesystem\Exception\IOException $e) {
             throw new IOException(sprintf('Failed to rename file "%s"' . PHP_EOL . 'Filesystem base: "%s".' . PHP_EOL . 'Reason: %s".', $file->getRelativePathname(), $this->mountPath, $e->getMessage()), (string) $file, 0, $e);
         }

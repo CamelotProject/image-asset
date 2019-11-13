@@ -73,7 +73,7 @@ final class Response extends HttpFoundationResponse
     public function setThumbnail(ThumbnailInterface $thumbnail, bool $autoEtag = false, bool $autoLastModified = true): void
     {
         $this->thumbnail = $thumbnail;
-        $this->setContent($thumbnail);
+        $this->setContent((string) $thumbnail);
 
         if ($autoEtag) {
             $this->setAutoEtag();
